@@ -1,9 +1,6 @@
 package edu.lb.spring_networktechnologies;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -15,8 +12,18 @@ public class HelloController {
     }
 
     @GetMapping("/helloSomeone")
-    public String helloSomeone(@RequestParam String name){
-        return "Hello " + name +"!";
+    public String helloSomeone(@RequestParam String fname, @RequestParam String lname){
+        return "Hello "+ fname + " " + lname;
+    }
+
+    @GetMapping("/addNumbers")
+    public Integer addNumbers(@RequestParam Integer num1, @RequestParam Integer num2){
+        return num1 + num2;
+    }
+
+    @GetMapping("/anotherHello/{name}")
+    public String otherHello(@PathVariable String name) {
+        return "Hello "+ name + "!";
     }
 
 }
