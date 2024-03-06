@@ -1,7 +1,9 @@
 package edu.lb.spring_networktechnologies.controllers;
 
+import edu.lb.spring_networktechnologies.dtos.book.BookCreateDTO;
+import edu.lb.spring_networktechnologies.dtos.book.BookDTO;
 import edu.lb.spring_networktechnologies.entities.Book;
-import edu.lb.spring_networktechnologies.repositores.BookRepository;
+import edu.lb.spring_networktechnologies.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -10,21 +12,23 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/book")
 public class BookController {
 
-    private final BookRepository bookRepository;
+    private final BookService bookService;
 
     @Autowired
-    public BookController(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
     }
 
     @PostMapping("/add")
     @ResponseStatus(code = HttpStatus.CREATED) //code 201
-    public @ResponseBody Book addBook(@RequestBody Book book) {
-        return bookRepository.save(book);
+    public @ResponseBody BookDTO addBook(@RequestBody BookCreateDTO bookCreateDTO) {
+        Book book = bookService.toBook(bookCreateDTO);
+        Book savedBook = bookService.saveBook(book);
+        return bookService.toBookDTO(savedBook);
     }
 
     @GetMapping("/getAll")
-    public @ResponseBody Iterable<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public @ResponseBody Iterable<BookDTO> getAllBooks() {
+        return bookService.getAllBooks();
     }
 }
