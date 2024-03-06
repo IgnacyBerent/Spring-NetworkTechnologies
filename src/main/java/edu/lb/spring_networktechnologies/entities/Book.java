@@ -1,4 +1,4 @@
-package edu.lb.spring_networktechnologies;
+package edu.lb.spring_networktechnologies.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

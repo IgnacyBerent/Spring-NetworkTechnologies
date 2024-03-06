@@ -1,6 +1,6 @@
 package edu.lb.spring_networktechnologies.controllers;
 
-import edu.lb.spring_networktechnologies.Book;
+import edu.lb.spring_networktechnologies.entities.Book;
 import edu.lb.spring_networktechnologies.repositores.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,9 +1,9 @@
 package edu.lb.spring_networktechnologies.repositores;
 
-import edu.lb.spring_networktechnologies.entities.Book;
+import edu.lb.spring_networktechnologies.entities.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BookRepository extends CrudRepository<Book, Integer> {
+public interface UserRepository extends CrudRepository<User, Integer> {
 }
