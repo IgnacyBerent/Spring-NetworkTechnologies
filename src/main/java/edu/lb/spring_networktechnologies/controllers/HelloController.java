@@ -1,4 +1,4 @@
-package edu.lb.spring_networktechnologies;
+package edu.lb.spring_networktechnologies.controllers;
 
 import org.springframework.web.bind.annotation.*;
 
