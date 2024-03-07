@@ -1,5 +1,7 @@
 package edu.lb.spring_networktechnologies.dtos.book;
 
+import java.util.List;
+
 public class BookCreateDTO {
     private String isbn;
     private String title;
@@ -7,6 +9,8 @@ public class BookCreateDTO {
     private String publisher;
     private Long Year;
     private Long availableCopies;
+
+    private List<Long> loanIds;
 
     public String getIsbn() {
         return isbn;
@@ -54,5 +58,13 @@ public class BookCreateDTO {
 
     public void setAvailableCopies(Long availableCopies) {
         this.availableCopies = availableCopies;
+    }
+
+    public List<Long> getLoanIds() {
+        return loanIds;
+    }
+
+    public void setLoanIds(List<Long> loanIds) {
+        this.loanIds = loanIds;
     }
 }

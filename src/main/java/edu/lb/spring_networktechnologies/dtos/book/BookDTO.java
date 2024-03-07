@@ -8,6 +8,8 @@ public class BookDTO {
     private Long year;
     private Long availableCopies;
 
+    private Boolean isLoaned;
+
     public String getIsbn() {
         return isbn;
     }
@@ -54,5 +56,13 @@ public class BookDTO {
 
     public void setAvailableCopies(Long availableCopies) {
         this.availableCopies = availableCopies;
+    }
+
+    public Boolean isLoaned() {
+        return isLoaned;
+    }
+
+    public void setLoaned(Boolean isLoaned) {
+        this.isLoaned = isLoaned;
     }
 }

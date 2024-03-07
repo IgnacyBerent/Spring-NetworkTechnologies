@@ -1,9 +1,8 @@
 package edu.lb.spring_networktechnologies.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Book {
@@ -23,6 +22,9 @@ public class Book {
     private Long year;
 
     private Long availableCopies;
+
+    @OneToMany
+    private List<Loan> loaned;
 
     public Long getBookId() {
         return bookId;
@@ -78,5 +80,31 @@ public class Book {
 
     public void setAvailableCopies(Long availableCopies) {
         this.availableCopies = availableCopies;
+    }
+
+    public List<Loan> getLoaned() {
+        return loaned;
+    }
+
+    public void setLoaned(List<Loan> loaned) {
+        this.loaned = loaned;
+    }
+
+    public void addLoan(Loan loan) {
+        this.loaned.add(loan);
+    }
+
+    public void removeLoan(Loan loan) {
+        this.loaned.remove(loan);
+    }
+
+    public Boolean isCurrentlyLoaned() {
+        // if any loan has null returnDate then it is currently loaned
+        for (Loan loan : loaned) {
+            if (loan.getReturnDate() == null) {
+                return true;
+            }
+        }
+        return false;
     }
 }

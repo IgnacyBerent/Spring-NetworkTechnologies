@@ -1,11 +1,15 @@
 package edu.lb.spring_networktechnologies.dtos.user;
 
+import java.util.List;
+
 public class UserCreateDTO {
     private String username;
     private String password;
     private String role;
     private String email;
     private String name;
+
+    private List<Long> loans;
 
     public String getUsername() {
         return username;
@@ -45,5 +49,13 @@ public class UserCreateDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Long> getLoans() {
+        return loans;
+    }
+
+    public void setLoans(List<Long> loans) {
+        this.loans = loans;
     }
 }

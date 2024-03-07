@@ -1,9 +1,7 @@
 package edu.lb.spring_networktechnologies.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import java.util.List;
+import jakarta.persistence.*;
 
 @Entity
 public class User {
@@ -21,6 +19,9 @@ public class User {
     private String email;
 
     private String name;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Loan> loans;
 
     public Long getUserId() {
         return userId;
@@ -68,5 +69,29 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Loan> getLoans() {
+        return loans;
+    }
+
+    public void setLoans(List<Loan> loans) {
+        this.loans = loans;
+    }
+
+    public void addLoan(Loan loan) {
+        this.loans.add(loan);
+    }
+
+    public void removeLoan(Loan loan) {
+        this.loans.remove(loan);
+    }
+
+    public void clearLoans() {
+        this.loans.clear();
+    }
+
+    public boolean hasLoans() {
+        return !this.loans.isEmpty();
     }
 }

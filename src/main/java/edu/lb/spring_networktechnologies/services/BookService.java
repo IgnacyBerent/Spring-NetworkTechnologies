@@ -51,4 +51,8 @@ public class BookService {
         }
         return bookDTOs;
     }
+
+    public Book getBookById(Integer bookId) {
+        return bookRepository.findById(bookId).orElse(null);
+    }
 }
