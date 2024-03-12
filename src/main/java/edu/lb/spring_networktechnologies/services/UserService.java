@@ -67,7 +67,7 @@ public class UserService {
 
     public void delete(Long id) {
         if(!userRepository.existsById(id)) {
-            throw new RuntimeException("Book not found");
+            throw new RuntimeException("User not found");
         }
         userRepository.deleteById(id);
     }

@@ -78,7 +78,7 @@ public class LoanService {
 
     public void delete(Long id) {
         if(!loanRepository.existsById(id)) {
-            throw new RuntimeException("Book not found");
+            throw new RuntimeException("Loan not found");
         }
         loanRepository.deleteById(id);
     }
