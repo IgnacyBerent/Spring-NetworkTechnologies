@@ -36,8 +36,8 @@ public class LoanService {
         return StreamSupport.stream(loans.spliterator(), false)
                 .map(loan -> new GetLoanDto(
                         loan.getId(),
-                        loan.getUser().getUsername(),
                         loan.getBook().getTitle(),
+                        loan.getUser().getUsername(),
                         loan.getLoanDate(),
                         loan.getDueDate(),
                         loan.getReturnDate()
@@ -49,8 +49,8 @@ public class LoanService {
 
         return new GetLoanDto(
                 loanEntity.getId(),
-                loanEntity.getUser().getUsername(),
                 loanEntity.getBook().getTitle(),
+                loanEntity.getUser().getUsername(),
                 loanEntity.getLoanDate(),
                 loanEntity.getDueDate(),
                 loanEntity.getReturnDate()
