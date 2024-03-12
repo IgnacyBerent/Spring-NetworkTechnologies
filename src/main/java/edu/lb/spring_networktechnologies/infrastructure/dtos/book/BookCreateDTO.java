@@ -1,18 +1,15 @@
-package edu.lb.spring_networktechnologies.dtos.book;
-
-import edu.lb.spring_networktechnologies.entities.Review;
+package edu.lb.spring_networktechnologies.infrastructure.dtos.book;
 
 import java.util.List;
 
-public class BookDTO {
+public class BookCreateDTO {
     private String isbn;
     private String title;
     private String author;
     private String publisher;
-    private Long year;
+    private Long Year;
     private Long availableCopies;
-
-    private Boolean isLoaned;
+    private List<Long> loanIds;
     private List<Long> reviewIds;
 
     public String getIsbn() {
@@ -48,11 +45,11 @@ public class BookDTO {
     }
 
     public Long getYear() {
-        return year;
+        return Year;
     }
 
     public void setYear(Long year) {
-        this.year = year;
+        Year = year;
     }
 
     public Long getAvailableCopies() {
@@ -63,31 +60,19 @@ public class BookDTO {
         this.availableCopies = availableCopies;
     }
 
-    public Boolean isLoaned() {
-        return isLoaned;
+    public List<Long> getLoanIds() {
+        return loanIds;
     }
 
-    public void setLoaned(Boolean isLoaned) {
-        this.isLoaned = isLoaned;
+    public void setLoanIds(List<Long> loanIds) {
+        this.loanIds = loanIds;
     }
 
     public List<Long> getReviewIds() {
         return reviewIds;
     }
 
-    public void setReviewIds(List<Review> reviews) {
-        for (Review review : reviews) {
-            this.reviewIds.add(review.getReviewId());
-        }
+    public void setReviewIds(List<Long> reviewIds) {
+        this.reviewIds = reviewIds;
     }
-
-    public void addReviewId(Long reviewId) {
-        this.reviewIds.add(reviewId);
-    }
-
-    public void removeReviewId(Long reviewId) {
-        this.reviewIds.remove(reviewId);
-    }
-
-
 }

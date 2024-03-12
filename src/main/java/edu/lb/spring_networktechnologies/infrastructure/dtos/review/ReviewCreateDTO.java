@@ -1,4 +1,4 @@
-package edu.lb.spring_networktechnologies.dtos.review;
+package edu.lb.spring_networktechnologies.infrastructure.dtos.review;
 
 import java.time.LocalDate;
 

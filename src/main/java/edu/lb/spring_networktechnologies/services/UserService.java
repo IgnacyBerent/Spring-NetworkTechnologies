@@ -1,9 +1,9 @@
 package edu.lb.spring_networktechnologies.services;
 
-import edu.lb.spring_networktechnologies.dtos.user.UserCreateDTO;
-import edu.lb.spring_networktechnologies.dtos.user.UserDTO;
-import edu.lb.spring_networktechnologies.entities.User;
-import edu.lb.spring_networktechnologies.repositores.UserRepository;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.user.UserCreateDTO;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.user.UserDTO;
+import edu.lb.spring_networktechnologies.infrastructure.entities.User;
+import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

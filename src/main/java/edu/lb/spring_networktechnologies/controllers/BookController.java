@@ -1,8 +1,8 @@
 package edu.lb.spring_networktechnologies.controllers;
 
-import edu.lb.spring_networktechnologies.dtos.book.BookCreateDTO;
-import edu.lb.spring_networktechnologies.dtos.book.BookDTO;
-import edu.lb.spring_networktechnologies.entities.Book;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.BookCreateDTO;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.BookDTO;
+import edu.lb.spring_networktechnologies.infrastructure.entities.Book;
 import edu.lb.spring_networktechnologies.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

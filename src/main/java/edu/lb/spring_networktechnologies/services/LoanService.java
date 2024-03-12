@@ -1,11 +1,11 @@
 package edu.lb.spring_networktechnologies.services;
 
-import edu.lb.spring_networktechnologies.dtos.loan.LoanCreateDTO;
-import edu.lb.spring_networktechnologies.dtos.loan.LoanDTO;
-import edu.lb.spring_networktechnologies.entities.Book;
-import edu.lb.spring_networktechnologies.entities.Loan;
-import edu.lb.spring_networktechnologies.entities.User;
-import edu.lb.spring_networktechnologies.repositores.LoanRepository;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.LoanCreateDTO;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.LoanDTO;
+import edu.lb.spring_networktechnologies.infrastructure.entities.Book;
+import edu.lb.spring_networktechnologies.infrastructure.entities.Loan;
+import edu.lb.spring_networktechnologies.infrastructure.entities.User;
+import edu.lb.spring_networktechnologies.infrastructure.repositores.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

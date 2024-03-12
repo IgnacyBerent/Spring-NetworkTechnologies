@@ -1,8 +1,8 @@
 package edu.lb.spring_networktechnologies.controllers;
 
-import edu.lb.spring_networktechnologies.dtos.user.UserCreateDTO;
-import edu.lb.spring_networktechnologies.dtos.user.UserDTO;
-import edu.lb.spring_networktechnologies.entities.User;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.user.UserCreateDTO;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.user.UserDTO;
+import edu.lb.spring_networktechnologies.infrastructure.entities.User;
 import edu.lb.spring_networktechnologies.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

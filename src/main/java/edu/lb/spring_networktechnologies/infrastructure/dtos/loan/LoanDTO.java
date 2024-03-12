@@ -1,4 +1,4 @@
-package edu.lb.spring_networktechnologies.dtos.loan;
+package edu.lb.spring_networktechnologies.infrastructure.dtos.loan;
 
 import java.time.LocalDate;
 

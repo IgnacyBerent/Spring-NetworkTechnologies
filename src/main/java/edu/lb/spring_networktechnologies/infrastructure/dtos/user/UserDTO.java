@@ -1,4 +1,4 @@
-package edu.lb.spring_networktechnologies.dtos.user;
+package edu.lb.spring_networktechnologies.infrastructure.dtos.user;
 
 import java.util.List;
 

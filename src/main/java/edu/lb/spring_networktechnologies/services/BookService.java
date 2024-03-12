@@ -1,9 +1,9 @@
 package edu.lb.spring_networktechnologies.services;
 
-import edu.lb.spring_networktechnologies.dtos.book.BookCreateDTO;
-import edu.lb.spring_networktechnologies.dtos.book.BookDTO;
-import edu.lb.spring_networktechnologies.entities.Book;
-import edu.lb.spring_networktechnologies.repositores.BookRepository;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.BookCreateDTO;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.BookDTO;
+import edu.lb.spring_networktechnologies.infrastructure.entities.Book;
+import edu.lb.spring_networktechnologies.infrastructure.repositores.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

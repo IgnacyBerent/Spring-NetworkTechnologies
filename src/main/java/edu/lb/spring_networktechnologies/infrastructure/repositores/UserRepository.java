@@ -1,6 +1,6 @@
-package edu.lb.spring_networktechnologies.repositores;
+package edu.lb.spring_networktechnologies.infrastructure.repositores;
 
-import edu.lb.spring_networktechnologies.entities.User;
+import edu.lb.spring_networktechnologies.infrastructure.entities.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

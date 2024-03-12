@@ -1,12 +1,11 @@
 package edu.lb.spring_networktechnologies.services;
 
-import edu.lb.spring_networktechnologies.dtos.review.ReviewCreateDTO;
-import edu.lb.spring_networktechnologies.dtos.review.ReviewDTO;
-import edu.lb.spring_networktechnologies.entities.Book;
-import edu.lb.spring_networktechnologies.entities.Review;
-import edu.lb.spring_networktechnologies.entities.User;
-import edu.lb.spring_networktechnologies.repositores.LoanRepository;
-import edu.lb.spring_networktechnologies.repositores.ReviewRepository;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.review.ReviewCreateDTO;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.review.ReviewDTO;
+import edu.lb.spring_networktechnologies.infrastructure.entities.Book;
+import edu.lb.spring_networktechnologies.infrastructure.entities.Review;
+import edu.lb.spring_networktechnologies.infrastructure.entities.User;
+import edu.lb.spring_networktechnologies.infrastructure.repositores.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

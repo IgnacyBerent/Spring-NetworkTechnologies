@@ -1,4 +1,4 @@
-package edu.lb.spring_networktechnologies.entities;
+package edu.lb.spring_networktechnologies.infrastructure.entities;
 
 import java.util.List;
 import jakarta.persistence.*;
