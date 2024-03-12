@@ -4,34 +4,43 @@ import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "users", schema = "library")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
+    @Column(name = "username", unique = true)
     private String username;
 
+    @Column(name = "password")
     private String password;
 
+    @Column(name = "role")
     private String role;
 
+    @Column(name = "email")
     private String email;
 
+    @Column(name = "name")
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @Column(name = "loans")
     private List<Loan> loans;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @Column(name = "reviews")
     private List<Review> reviews;
 
     public Long getUserId() {
-        return userId;
+        return id;
     }
 
     public void setUserId(Long userId) {
-        this.userId = userId;
+        this.id = userId;
     }
 
     public String getUsername() {

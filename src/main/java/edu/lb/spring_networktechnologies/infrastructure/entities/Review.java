@@ -5,29 +5,36 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "review", schema = "library")
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long reviewId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     @ManyToOne
+    @Column(name = "book")
     private Book book;
 
     @ManyToOne
+    @Column(name = "user")
     private User user;
 
+    @Column(name = "rating")
     private Float rating;
 
+    @Column(name = "comment")
     private String comment;
 
+    @Column(name = "review_date")
     private LocalDate reviewDate;
 
     public Long getReviewId() {
-        return reviewId;
+        return id;
     }
 
     public void setReviewId(Long reviewId) {
-        this.reviewId = reviewId;
+        this.id = reviewId;
     }
 
     public Book getBook() {

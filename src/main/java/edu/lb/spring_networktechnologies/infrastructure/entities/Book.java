@@ -5,36 +5,46 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name = "books", schema = "library")
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long bookId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
+    @Column(name = "isbn", unique = true)
     private String isbn;
 
+    @Column(name = "title")
     private String title;
 
+    @Column(name = "author")
     private String author;
 
+    @Column(name = "publisher")
     private String publisher;
 
-    private Long year;
+    @Column(name = "publication_year")
+    private int publicationYear;
 
-    private Long availableCopies;
+    @Column(name = "available_copies")
+    private int availableCopies;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @Column(name = "loaned")
     private List<Loan> loaned;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @Column(name = "reviews")
     private List<Review> reviews;
 
-    public Long getBookId() {
-        return bookId;
+    public Long getId() {
+        return id;
     }
 
-    public void setBookId(Long bookId) {
-        this.bookId = bookId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getIsbn() {
@@ -69,19 +79,19 @@ public class Book {
         this.publisher = publisher;
     }
 
-    public Long getYear() {
-        return year;
+    public int getPublicationYear() {
+        return publicationYear;
     }
 
-    public void setYear(Long year) {
-        this.year = year;
+    public void setPublicationYear(int publicationYear) {
+        this.publicationYear = publicationYear;
     }
 
-    public Long getAvailableCopies() {
+    public int getAvailableCopies() {
         return availableCopies;
     }
 
-    public void setAvailableCopies(Long availableCopies) {
+    public void setAvailableCopies(int availableCopies) {
         this.availableCopies = availableCopies;
     }
 
@@ -93,48 +103,11 @@ public class Book {
         this.loaned = loaned;
     }
 
-    public void addLoan(Loan loan) {
-        this.loaned.add(loan);
-    }
-
-    public void removeLoan(Loan loan) {
-        this.loaned.remove(loan);
-    }
-
-    public Boolean isCurrentlyLoaned() {
-        // if any loan has null returnDate then it is currently loaned
-        for (Loan loan : loaned) {
-            if (loan.getReturnDate() == null) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public List<Review> getReviews() {
         return reviews;
     }
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
-    }
-
-    public void addReview(Review review) {
-        this.reviews.add(review);
-    }
-
-    public void removeReview(Review review) {
-        this.reviews.remove(review);
-    }
-
-    public Double getAverageRating() {
-        if (reviews.size() == 0) {
-            return 0.0;
-        }
-        Double sum = 0.0;
-        for (Review review : reviews) {
-            sum += review.getRating();
-        }
-        return sum / reviews.size();
     }
 }

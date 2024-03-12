@@ -5,30 +5,37 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "loan", schema = "library")
 public class Loan {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long loanId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     @ManyToOne
+    @Column(name = "user")
     private User user;
 
     @ManyToOne
+    @Column(name = "book")
     private Book book;
 
+    @Column(name = "loan_date")
     private LocalDate LoanDate;
 
+    @Column(name = "due_date")
     private LocalDate DueDate;
 
+    @Column(name = "return_date")
     private LocalDate ReturnDate;
 
     public Long getLoanId() {
-        return loanId;
+        return id;
     }
 
     public void setLoanId(Long loanId) {
-        this.loanId = loanId;
+        this.id = loanId;
     }
 
     public User getUser() {
