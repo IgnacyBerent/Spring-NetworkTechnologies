@@ -34,5 +34,15 @@ public class BookController {
         return new ResponseEntity<>(newBook, HttpStatus.CREATED);
     }
 
+    @GetMapping("/get/{id}")
+    public GetBookDto getBook(@PathVariable Long id) {
+        return bookService.getOne(id);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        bookService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }
