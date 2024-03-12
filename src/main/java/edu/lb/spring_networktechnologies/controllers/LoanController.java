@@ -32,8 +32,8 @@ public class LoanController {
 
     @PostMapping("/add")
     @ResponseStatus(code = HttpStatus.CREATED) //code 201
-    public ResponseEntity<CreateLoanResponseDto> create(@RequestBody CreateLoanDto book) {
-        var newLoan = loanService.create(book);
+    public ResponseEntity<CreateLoanResponseDto> create(@RequestBody CreateLoanDto loan) {
+        var newLoan = loanService.create(loan);
         return new ResponseEntity<>(newLoan, HttpStatus.CREATED);
     }
 
