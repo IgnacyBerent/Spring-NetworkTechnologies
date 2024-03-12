@@ -2,26 +2,47 @@ package edu.lb.spring_networktechnologies.infrastructure.dtos.review;
 
 import java.time.LocalDate;
 
-public class ReviewCreateDTO {
-    private Integer bookId;
-    private Integer userId;
+public class CreateReviewResponseDto {
+    private Long id;
+    private Long bookId;
+    private Long userId;
     private Float rating;
     private String comment;
     private LocalDate reviewDate;
 
-    public Integer getBookId() {
+    public CreateReviewResponseDto(Long id, Long bookId, Long userId, Float rating, String comment, LocalDate reviewDate) {
+        this.id = id;
+        this.bookId = bookId;
+        this.userId = userId;
+        this.rating = rating;
+        this.comment = comment;
+        this.reviewDate = reviewDate;
+    }
+
+    public CreateReviewResponseDto() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getBookId() {
         return bookId;
     }
 
-    public void setBookId(Integer bookId) {
+    public void setBookId(Long bookId) {
         this.bookId = bookId;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

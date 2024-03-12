@@ -1,63 +1,89 @@
 package edu.lb.spring_networktechnologies.services;
 
-import edu.lb.spring_networktechnologies.infrastructure.dtos.review.ReviewCreateDTO;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.review.ReviewDTO;
-import edu.lb.spring_networktechnologies.infrastructure.entities.Book;
-import edu.lb.spring_networktechnologies.infrastructure.entities.Review;
-import edu.lb.spring_networktechnologies.infrastructure.entities.User;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.review.CreateReviewDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.review.CreateReviewResponseDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.review.GetReviewDto;
+import edu.lb.spring_networktechnologies.infrastructure.entities.BookEntity;
+import edu.lb.spring_networktechnologies.infrastructure.entities.ReviewEntity;
+import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
+import edu.lb.spring_networktechnologies.infrastructure.repositores.BookRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.ReviewRepository;
+import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private BookService bookService;
-    private UserService userService;
 
+    private final BookRepository bookRepository;
+    private final UserRepository userRepository;
     @Autowired
-    public ReviewService(ReviewRepository reviewRepository) {
+    public ReviewService(ReviewRepository reviewRepository, BookRepository bookRepository, UserRepository userRepository) {
         this.reviewRepository = reviewRepository;
+        this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
     }
 
-    public Review toLoan(ReviewCreateDTO reviewCreateDTO) {
-        Review review = new Review();
-        Book book = bookService.getBookById(reviewCreateDTO.getBookId());
-        User user = userService.getUserById(reviewCreateDTO.getUserId());
-        review.setBook(book);
-        review.setUser(user);
-        review.setRating(reviewCreateDTO.getRating());
-        review.setComment(reviewCreateDTO.getComment());
-        review.setReviewDate(reviewCreateDTO.getReviewDate());
-        return review;
+    public List<GetReviewDto> getAll() {
+        var reviews = reviewRepository.findAll();
+
+        return StreamSupport.stream(reviews.spliterator(), false)
+                .map(review -> new GetReviewDto(
+                        review.getId(),
+                        review.getBook().getTitle(),
+                        review.getUser().getUsername(),
+                        review.getRating(),
+                        review.getComment(),
+                        review.getReviewDate()
+                )).collect(Collectors.toList());
     }
 
-    public Review saveReview(Review review) {
-        return reviewRepository.save(review);
+    public GetReviewDto getOne(Long id) {
+        var reviewEntity = reviewRepository.findById(id).orElseThrow(() -> new RuntimeException("Review not found"));
+
+        return new GetReviewDto(
+                reviewEntity.getId(),
+                reviewEntity.getBook().getTitle(),
+                reviewEntity.getUser().getUsername(),
+                reviewEntity.getRating(),
+                reviewEntity.getComment(),
+                reviewEntity.getReviewDate()
+        );
     }
 
-    public ReviewDTO toReviewDTO(Review review) {
-        ReviewDTO reviewDTO = new ReviewDTO();
-        Book book = review.getBook();
-        User user = review.getUser();
-        reviewDTO.setBookId(book.getBookId());
-        reviewDTO.setUserId(user.getUserId());
-        reviewDTO.setRating(review.getRating());
-        reviewDTO.setComment(review.getComment());
-        reviewDTO.setReviewDate(review.getReviewDate());
-        return reviewDTO;
+    public CreateReviewResponseDto create(CreateReviewDto review) {
+        var reviewEntity = new ReviewEntity();
+        BookEntity book = bookRepository.findById(review.getBookId()).orElseThrow(() -> new RuntimeException("Book not found"));
+        UserEntity user = userRepository.findById(review.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+
+        reviewEntity.setBook(book);
+        reviewEntity.setUser(user);
+        reviewEntity.setRating(review.getRating());
+        reviewEntity.setComment(review.getComment());
+        reviewEntity.setReviewDate(review.getReviewDate());
+
+        var newReview = reviewRepository.save(reviewEntity);
+
+        return new CreateReviewResponseDto(
+                newReview.getId(),
+                newReview.getBook().getId(),
+                newReview.getUser().getId(),
+                newReview.getRating(),
+                newReview.getComment(),
+                newReview.getReviewDate()
+        );
     }
 
-    public Iterable<ReviewDTO> getAllReviews() {
-        Iterable<Review> reviews = reviewRepository.findAll();
-        List<ReviewDTO> reviewDTOs = new ArrayList<>();
-        for (Review review : reviews) {
-            reviewDTOs.add(toReviewDTO(review));
+    public void delete(Long id) {
+        if(!reviewRepository.existsById(id)) {
+            throw new RuntimeException("Review not found");
         }
-        return reviewDTOs;
+        reviewRepository.deleteById(id);
     }
 }
