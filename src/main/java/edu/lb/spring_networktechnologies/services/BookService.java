@@ -8,6 +8,7 @@ import edu.lb.spring_networktechnologies.infrastructure.repositores.BookReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -58,6 +59,8 @@ public class BookService {
         bookEntity.setPublisher(book.getPublisher());
         bookEntity.setPublicationYear(book.getPublicationYear());
         bookEntity.setAvailableCopies(book.getAvailableCopies());
+        bookEntity.setReviews(new ArrayList<>());
+        bookEntity.setLoaned(new ArrayList<>());
 
         var newBook = bookRepository.save(bookEntity);
         return new CreateBookResponseDto(
