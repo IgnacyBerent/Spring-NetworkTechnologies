@@ -59,8 +59,10 @@ public class LoanService {
 
     public CreateLoanResponseDto create(CreateLoanDto loan) {
         var loanEntity = new LoanEntity();
-        loanEntity.setUser(userRepository.findById(loan.getUserId()).orElseThrow(() -> new RuntimeException("User not found")));
-        loanEntity.setBook(bookRepository.findById(loan.getBookId()).orElseThrow(() -> new RuntimeException("Book not found")));
+        UserEntity user = userRepository.findById(loan.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+        BookEntity book = bookRepository.findById(loan.getBookId()).orElseThrow(() -> new RuntimeException("Book not found"));
+        loanEntity.setUser(user);
+        loanEntity.setBook(book);
         loanEntity.setLoanDate(loan.getLoanDate());
         loanEntity.setDueDate(loan.getDueDate());
         var newLoan = loanRepository.save(loanEntity);
