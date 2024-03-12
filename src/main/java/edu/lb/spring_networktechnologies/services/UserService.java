@@ -38,7 +38,7 @@ public class UserService {
         var userEntity = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
 
         return new GetUserDto(
-            userEntity.getUserId(),
+            userEntity.getId(),
             userEntity.getUsername()
         );
     }
