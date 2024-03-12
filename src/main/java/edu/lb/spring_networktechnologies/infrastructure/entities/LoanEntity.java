@@ -14,11 +14,11 @@ public class LoanEntity {
     private Long id;
 
     @ManyToOne
-    @Column(name = "user")
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
     @ManyToOne
-    @Column(name = "book")
+    @JoinColumn(name = "book_id")
     private BookEntity book;
 
     @Column(name = "loan_date")

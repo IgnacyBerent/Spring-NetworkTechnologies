@@ -13,11 +13,11 @@ public class ReviewEntity {
     private Long id;
 
     @ManyToOne
-    @Column(name = "book")
+    @JoinColumn(name = "book_id")
     private BookEntity book;
 
     @ManyToOne
-    @Column(name = "user")
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
     @Column(name = "rating")
