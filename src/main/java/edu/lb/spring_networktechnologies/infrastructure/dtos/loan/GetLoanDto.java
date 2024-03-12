@@ -2,12 +2,33 @@ package edu.lb.spring_networktechnologies.infrastructure.dtos.loan;
 
 import java.time.LocalDate;
 
-public class LoanDTO {
+public class GetLoanDto {
+    private Long id;
     private String bookTitle;
     private String userName;
     private LocalDate dateOfLoan;
     private LocalDate dueDate;
-    private Boolean isReturned;
+    private LocalDate returnDate;
+
+    public GetLoanDto(Long id, String bookTitle, String userName, LocalDate dateOfLoan, LocalDate dueDate, LocalDate returnDate) {
+        this.id = id;
+        this.bookTitle = bookTitle;
+        this.userName = userName;
+        this.dateOfLoan = dateOfLoan;
+        this.dueDate = dueDate;
+        this.returnDate = returnDate;
+    }
+
+    public GetLoanDto() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getBookTitle() {
         return bookTitle;
@@ -41,11 +62,11 @@ public class LoanDTO {
         this.dueDate = dueDate;
     }
 
-    public Boolean getIsReturned() {
-        return isReturned;
+    public LocalDate getReturnDate() {
+        return returnDate;
     }
 
-    public void setIsReturned(Boolean isReturned) {
-        this.isReturned = isReturned;
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
     }
 }

@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "loan", schema = "library")
-public class Loan {
+public class LoanEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,11 +15,11 @@ public class Loan {
 
     @ManyToOne
     @Column(name = "user")
-    private User user;
+    private UserEntity user;
 
     @ManyToOne
     @Column(name = "book")
-    private Book book;
+    private BookEntity book;
 
     @Column(name = "loan_date")
     private LocalDate LoanDate;
@@ -30,27 +30,27 @@ public class Loan {
     @Column(name = "return_date")
     private LocalDate ReturnDate;
 
-    public Long getLoanId() {
+    public Long getId() {
         return id;
     }
 
-    public void setLoanId(Long loanId) {
+    public void setId(Long loanId) {
         this.id = loanId;
     }
 
-    public User getUser() {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 
-    public Book getBook() {
+    public BookEntity getBook() {
         return book;
     }
 
-    public void setBook(Book book) {
+    public void setBook(BookEntity book) {
         this.book = book;
     }
 
