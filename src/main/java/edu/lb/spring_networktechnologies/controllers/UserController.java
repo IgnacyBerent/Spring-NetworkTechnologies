@@ -1,12 +1,16 @@
 package edu.lb.spring_networktechnologies.controllers;
 
-import edu.lb.spring_networktechnologies.infrastructure.dtos.user.UserCreateDTO;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.user.UserDTO;
-import edu.lb.spring_networktechnologies.infrastructure.entities.User;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.user.CreateUserDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.user.CreateUserResponseDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.user.GetUserDto;
+import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
 import edu.lb.spring_networktechnologies.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -19,18 +23,27 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/add")
-    @ResponseStatus(code = HttpStatus.CREATED) //code 201
-    public @ResponseBody UserDTO addUser(@RequestBody UserCreateDTO userCreateDTO) {
-        System.out.println("addUser method called with UserCreateDTO: " + userCreateDTO);
-        User user = userService.toUser(userCreateDTO);
-        User savedUser = userService.saveUser(user);
-        System.out.println("User saved: " + savedUser);
-        return userService.toUserDTO(savedUser);
+    @GetMapping("/getAll")
+    public @ResponseBody List<GetUserDto> getAllUsers() {
+        return userService.getAll();
     }
 
-    @GetMapping("/getAll")
-    public @ResponseBody Iterable<UserDTO> getAllUsers() {
-        return userService.getAllUsers();
+    @PostMapping("/add")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public ResponseEntity<CreateUserResponseDto> create(@RequestBody CreateUserDto user) {
+        var newUser = userService.create(user);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
+
+    @GetMapping("/get/{id}")
+    public GetUserDto getUser(@PathVariable Long id) {
+        return userService.getOne(id);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

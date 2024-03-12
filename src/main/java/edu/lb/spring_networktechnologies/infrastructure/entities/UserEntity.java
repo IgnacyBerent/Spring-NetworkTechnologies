@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users", schema = "library")
-public class User {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,11 +29,11 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL)
     @Column(name = "loans")
-    private List<Loan> loans;
+    private List<LoanEntity> loans;
 
     @OneToMany(cascade = CascadeType.ALL)
     @Column(name = "reviews")
-    private List<Review> reviews;
+    private List<ReviewEntity> reviews;
 
     public Long getUserId() {
         return id;
@@ -83,19 +83,19 @@ public class User {
         this.name = name;
     }
 
-    public List<Loan> getLoans() {
+    public List<LoanEntity> getLoans() {
         return loans;
     }
 
-    public void setLoans(List<Loan> loans) {
+    public void setLoans(List<LoanEntity> loans) {
         this.loans = loans;
     }
 
-    public void addLoan(Loan loan) {
+    public void addLoan(LoanEntity loan) {
         this.loans.add(loan);
     }
 
-    public void removeLoan(Loan loan) {
+    public void removeLoan(LoanEntity loan) {
         this.loans.remove(loan);
     }
 
@@ -107,19 +107,19 @@ public class User {
         return !this.loans.isEmpty();
     }
 
-    public List<Review> getReviews() {
+    public List<ReviewEntity> getReviews() {
         return reviews;
     }
 
-    public void setReviews(List<Review> reviews) {
+    public void setReviews(List<ReviewEntity> reviews) {
         this.reviews = reviews;
     }
 
-    public void addReview(Review review) {
+    public void addReview(ReviewEntity review) {
         this.reviews.add(review);
     }
 
-    public void removeReview(Review review) {
+    public void removeReview(ReviewEntity review) {
         this.reviews.remove(review);
     }
 }

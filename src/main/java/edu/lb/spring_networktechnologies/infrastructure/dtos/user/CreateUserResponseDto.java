@@ -1,15 +1,32 @@
 package edu.lb.spring_networktechnologies.infrastructure.dtos.user;
 
-import java.util.List;
-
-public class UserCreateDTO {
+public class CreateUserResponseDto {
+    private Long id;
     private String username;
     private String password;
     private String role;
     private String email;
     private String name;
-    private List<Long> loans;
-    private List<Long> reviews;
+
+    public CreateUserResponseDto(Long id, String username, String password, String role, String email, String name) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.email = email;
+        this.name = name;
+    }
+
+    public CreateUserResponseDto() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -49,21 +66,5 @@ public class UserCreateDTO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Long> getLoans() {
-        return loans;
-    }
-
-    public void setLoans(List<Long> loans) {
-        this.loans = loans;
-    }
-
-    public List<Long> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Long> reviewIds) {
-        this.reviews = reviewIds;
     }
 }

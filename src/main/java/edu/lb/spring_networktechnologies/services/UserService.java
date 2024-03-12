@@ -1,8 +1,9 @@
 package edu.lb.spring_networktechnologies.services;
 
-import edu.lb.spring_networktechnologies.infrastructure.dtos.user.UserCreateDTO;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.user.UserDTO;
-import edu.lb.spring_networktechnologies.infrastructure.entities.User;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.user.CreateUserDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.user.CreateUserResponseDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.user.GetUserDto;
+import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 @Service
 public class UserService {
@@ -23,37 +25,50 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User toUser(UserCreateDTO userCreateDTO) {
-        User user = new User();
-        user.setUsername(userCreateDTO.getUsername());
-        user.setPassword(passwordEncoder.encode(userCreateDTO.getPassword()));
-        user.setRole(userCreateDTO.getRole());
-        user.setEmail(userCreateDTO.getEmail());
-        user.setName(userCreateDTO.getName());
-        return user;
+    public List<GetUserDto> getAll() {
+        var users = userRepository.findAll();
+
+        return StreamSupport.stream(users.spliterator(), false).map(user -> new GetUserDto(
+                user.getUserId(),
+                user.getUsername()
+        )).toList();
     }
 
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public GetUserDto getOne(Long id) {
+        var userEntity = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+
+        return new GetUserDto(
+            userEntity.getUserId(),
+            userEntity.getUsername()
+        );
     }
 
-    public UserDTO toUserDTO(User user) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUsername(user.getUsername());
-        return userDTO;
+    public CreateUserResponseDto create(CreateUserDto user) {
+        var userEntity = new UserEntity();
+        userEntity.setUsername(user.getUsername());
+        userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
+        userEntity.setRole(user.getRole());
+        userEntity.setEmail(user.getEmail());
+        userEntity.setName(user.getName());
+        userEntity.setLoans(new ArrayList<>());
+        userEntity.setReviews(new ArrayList<>());
+
+        var newUser = userRepository.save(userEntity);
+
+        return new CreateUserResponseDto(
+            newUser.getUserId(),
+            newUser.getUsername(),
+            newUser.getPassword(),
+            newUser.getRole(),
+            newUser.getEmail(),
+            newUser.getName()
+        );
     }
 
-    public Iterable<UserDTO> getAllUsers() {
-        Iterable<User> users = userRepository.findAll();
-        List<UserDTO> userDTOs = new ArrayList<>();
-        for (User user : users) {
-            userDTOs.add(toUserDTO(user));
+    public void delete(Long id) {
+        if(!userRepository.existsById(id)) {
+            throw new RuntimeException("Book not found");
         }
-        return userDTOs;
+        userRepository.deleteById(id);
     }
-
-    public User getUserById(Integer userId) {
-        return userRepository.findById(userId).orElse(null);
-    }
-
 }
