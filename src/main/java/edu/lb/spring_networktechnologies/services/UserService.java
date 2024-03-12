@@ -29,7 +29,7 @@ public class UserService {
         var users = userRepository.findAll();
 
         return StreamSupport.stream(users.spliterator(), false).map(user -> new GetUserDto(
-                user.getUserId(),
+                user.getId(),
                 user.getUsername()
         )).toList();
     }
@@ -56,7 +56,7 @@ public class UserService {
         var newUser = userRepository.save(userEntity);
 
         return new CreateUserResponseDto(
-            newUser.getUserId(),
+            newUser.getId(),
             newUser.getUsername(),
             newUser.getPassword(),
             newUser.getRole(),

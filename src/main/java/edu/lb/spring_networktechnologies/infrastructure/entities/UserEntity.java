@@ -35,11 +35,11 @@ public class UserEntity {
     @Column(name = "reviews")
     private List<ReviewEntity> reviews;
 
-    public Long getUserId() {
+    public Long getId() {
         return id;
     }
 
-    public void setUserId(Long userId) {
+    public void setId(Long userId) {
         this.id = userId;
     }
 
