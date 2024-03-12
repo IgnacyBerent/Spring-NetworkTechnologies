@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "books", schema = "library")
-public class Book {
+public class BookEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,11 +33,11 @@ public class Book {
 
     @OneToMany(cascade = CascadeType.ALL)
     @Column(name = "loaned")
-    private List<Loan> loaned;
+    private List<LoanEntity> loaned;
 
     @OneToMany(cascade = CascadeType.ALL)
     @Column(name = "reviews")
-    private List<Review> reviews;
+    private List<ReviewEntity> reviews;
 
     public Long getId() {
         return id;
@@ -95,19 +95,19 @@ public class Book {
         this.availableCopies = availableCopies;
     }
 
-    public List<Loan> getLoaned() {
+    public List<LoanEntity> getLoaned() {
         return loaned;
     }
 
-    public void setLoaned(List<Loan> loaned) {
+    public void setLoaned(List<LoanEntity> loaned) {
         this.loaned = loaned;
     }
 
-    public List<Review> getReviews() {
+    public List<ReviewEntity> getReviews() {
         return reviews;
     }
 
-    public void setReviews(List<Review> reviews) {
+    public void setReviews(List<ReviewEntity> reviews) {
         this.reviews = reviews;
     }
 }

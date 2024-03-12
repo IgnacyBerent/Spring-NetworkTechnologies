@@ -1,14 +1,16 @@
 package edu.lb.spring_networktechnologies.services;
 
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.BookCreateDTO;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.BookDTO;
-import edu.lb.spring_networktechnologies.infrastructure.entities.Book;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookResponseDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDto;
+import edu.lb.spring_networktechnologies.infrastructure.entities.BookEntity;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class BookService {
@@ -19,43 +21,61 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public Book toBook(BookCreateDTO bookCreateDTO) {
-        Book book = new Book();
-        book.setTitle(bookCreateDTO.getTitle());
-        book.setAuthor(bookCreateDTO.getAuthor());
-        book.setIsbn(bookCreateDTO.getIsbn());
-        book.setYear(bookCreateDTO.getYear());
-        book.setPublisher(bookCreateDTO.getPublisher());
-        book.setAvailableCopies(bookCreateDTO.getAvailableCopies());
-        return book;
+    public List<GetBookDto> getAll() {
+        var books = bookRepository.findAll();
+
+        return StreamSupport.stream(books.spliterator(), false)
+                .map(book -> new GetBookDto(
+                        book.getId(),
+                        book.getIsbn(),
+                        book.getTitle(),
+                        book.getAuthor(),
+                        book.getPublisher(),
+                        book.getPublicationYear(),
+                        book.getAvailableCopies() > 0
+                )).collect(Collectors.toList());
     }
 
-    public Book saveBook(Book book) {
-        return bookRepository.save(book);
+    public GetBookDto getOne(Long id) {
+        var bookEntity = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
+
+        return new GetBookDto(
+                bookEntity.getId(),
+                bookEntity.getIsbn(),
+                bookEntity.getTitle(),
+                bookEntity.getAuthor(),
+                bookEntity.getPublisher(),
+                bookEntity.getPublicationYear(),
+                bookEntity.getAvailableCopies() > 0
+        );
     }
 
-    public BookDTO toBookDTO(Book book) {
-        BookDTO bookDTO = new BookDTO();
-        bookDTO.setIsbn(book.getIsbn());
-        bookDTO.setTitle(book.getTitle());
-        bookDTO.setAuthor(book.getAuthor());
-        bookDTO.setPublisher(book.getPublisher());
-        bookDTO.setYear(book.getYear());
-        bookDTO.setAvailableCopies(book.getAvailableCopies());
-        bookDTO.setReviewIds(book.getReviews());
-        return bookDTO;
+    public CreateBookResponseDto create(CreateBookDto book) {
+        var bookEntity = new BookEntity();
+        bookEntity.setIsbn(book.getIsbn());
+        bookEntity.setTitle(book.getTitle());
+        bookEntity.setAuthor(book.getAuthor());
+        bookEntity.setPublisher(book.getPublisher());
+        bookEntity.setPublicationYear(book.getPublicationYear());
+        bookEntity.setAvailableCopies(book.getAvailableCopies());
+
+        var newBook = bookRepository.save(bookEntity);
+        return new CreateBookResponseDto(
+                newBook.getId(),
+                newBook.getIsbn(),
+                newBook.getTitle(),
+                newBook.getAuthor(),
+                newBook.getPublisher(),
+                newBook.getPublicationYear(),
+                newBook.getAvailableCopies()
+        );
     }
 
-    public Iterable<BookDTO> getAllBooks() {
-        Iterable<Book> books = bookRepository.findAll();
-        List<BookDTO> bookDTOs = new ArrayList<>();
-        for (Book book : books) {
-            bookDTOs.add(toBookDTO(book));
+    public void delete(Long id) {
+        if(!bookRepository.existsById(id)) {
+            throw new RuntimeException("Book not found");
         }
-        return bookDTOs;
+        bookRepository.deleteById(id);
     }
 
-    public Book getBookById(Integer bookId) {
-        return bookRepository.findById(bookId).orElse(null);
-    }
 }

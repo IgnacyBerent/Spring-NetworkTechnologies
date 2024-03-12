@@ -1,16 +1,24 @@
 package edu.lb.spring_networktechnologies.infrastructure.dtos.book;
 
-import java.util.List;
-
-public class BookCreateDTO {
+public class CreateBookDto {
     private String isbn;
     private String title;
     private String author;
     private String publisher;
-    private Long Year;
-    private Long availableCopies;
-    private List<Long> loanIds;
-    private List<Long> reviewIds;
+    private int publicationYear;
+    private int availableCopies;
+
+    public CreateBookDto(String isbn, String title, String author, String publisher, int publicationYear, int availableCopies) {
+        this.isbn = isbn;
+        this.title = title;
+        this.author = author;
+        this.publisher = publisher;
+        this.publicationYear = publicationYear;
+        this.availableCopies = availableCopies;
+    }
+
+    public CreateBookDto() {
+    }
 
     public String getIsbn() {
         return isbn;
@@ -44,35 +52,19 @@ public class BookCreateDTO {
         this.publisher = publisher;
     }
 
-    public Long getYear() {
-        return Year;
+    public int getPublicationYear() {
+        return publicationYear;
     }
 
-    public void setYear(Long year) {
-        Year = year;
+    public void setPublicationYear(int publicationYear) {
+        this.publicationYear = publicationYear;
     }
 
-    public Long getAvailableCopies() {
+    public int getAvailableCopies() {
         return availableCopies;
     }
 
-    public void setAvailableCopies(Long availableCopies) {
+    public void setAvailableCopies(int availableCopies) {
         this.availableCopies = availableCopies;
-    }
-
-    public List<Long> getLoanIds() {
-        return loanIds;
-    }
-
-    public void setLoanIds(List<Long> loanIds) {
-        this.loanIds = loanIds;
-    }
-
-    public List<Long> getReviewIds() {
-        return reviewIds;
-    }
-
-    public void setReviewIds(List<Long> reviewIds) {
-        this.reviewIds = reviewIds;
     }
 }

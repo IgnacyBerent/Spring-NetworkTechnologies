@@ -1,15 +1,18 @@
 package edu.lb.spring_networktechnologies.controllers;
 
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.BookCreateDTO;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.BookDTO;
-import edu.lb.spring_networktechnologies.infrastructure.entities.Book;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookResponseDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDto;
 import edu.lb.spring_networktechnologies.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/book")
+@RequestMapping("/api/books")
 public class BookController {
 
     private final BookService bookService;
@@ -19,16 +22,17 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @PostMapping("/add")
-    @ResponseStatus(code = HttpStatus.CREATED) //code 201
-    public @ResponseBody BookDTO addBook(@RequestBody BookCreateDTO bookCreateDTO) {
-        Book book = bookService.toBook(bookCreateDTO);
-        Book savedBook = bookService.saveBook(book);
-        return bookService.toBookDTO(savedBook);
+    @GetMapping("/getAll")
+    public @ResponseBody List<GetBookDto> getAllBooks() {
+        return bookService.getAll();
     }
 
-    @GetMapping("/getAll")
-    public @ResponseBody Iterable<BookDTO> getAllBooks() {
-        return bookService.getAllBooks();
+    @PostMapping("/add")
+    @ResponseStatus(code = HttpStatus.CREATED) //code 201
+    public ResponseEntity<CreateBookResponseDto> create(@RequestBody CreateBookDto book) {
+        var newBook = bookService.create(book);
+        return new ResponseEntity<>(newBook, HttpStatus.CREATED);
     }
+
+
 }
