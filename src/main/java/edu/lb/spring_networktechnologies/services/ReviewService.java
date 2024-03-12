@@ -12,6 +12,7 @@ import edu.lb.spring_networktechnologies.infrastructure.repositores.UserReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -61,12 +62,14 @@ public class ReviewService {
         var reviewEntity = new ReviewEntity();
         BookEntity book = bookRepository.findById(review.getBookId()).orElseThrow(() -> new RuntimeException("Book not found"));
         UserEntity user = userRepository.findById(review.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+        LocalDate currentDate = LocalDate.now();
+
 
         reviewEntity.setBook(book);
         reviewEntity.setUser(user);
         reviewEntity.setRating(review.getRating());
         reviewEntity.setComment(review.getComment());
-        reviewEntity.setReviewDate(review.getReviewDate());
+        reviewEntity.setReviewDate(currentDate);
 
         var newReview = reviewRepository.save(reviewEntity);
 

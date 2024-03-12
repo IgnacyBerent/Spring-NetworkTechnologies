@@ -14,7 +14,6 @@ public class CreateReviewDto {
         this.userId = userId;
         this.rating = rating;
         this.comment = comment;
-        this.reviewDate = reviewDate;
     }
 
     public CreateReviewDto() {
