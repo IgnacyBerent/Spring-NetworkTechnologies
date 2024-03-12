@@ -25,6 +25,8 @@ public class BookService {
         book.setAuthor(bookCreateDTO.getAuthor());
         book.setIsbn(bookCreateDTO.getIsbn());
         book.setYear(bookCreateDTO.getYear());
+        book.setPublisher(bookCreateDTO.getPublisher());
+        book.setAvailableCopies(bookCreateDTO.getAvailableCopies());
         return book;
     }
 
@@ -40,6 +42,7 @@ public class BookService {
         bookDTO.setPublisher(book.getPublisher());
         bookDTO.setYear(book.getYear());
         bookDTO.setAvailableCopies(book.getAvailableCopies());
+        bookDTO.setReviewIds(book.getReviews());
         return bookDTO;
     }
 

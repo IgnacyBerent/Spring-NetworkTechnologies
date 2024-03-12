@@ -9,8 +9,8 @@ public class BookCreateDTO {
     private String publisher;
     private Long Year;
     private Long availableCopies;
-
     private List<Long> loanIds;
+    private List<Long> reviewIds;
 
     public String getIsbn() {
         return isbn;
@@ -66,5 +66,13 @@ public class BookCreateDTO {
 
     public void setLoanIds(List<Long> loanIds) {
         this.loanIds = loanIds;
+    }
+
+    public List<Long> getReviewIds() {
+        return reviewIds;
+    }
+
+    public void setReviewIds(List<Long> reviewIds) {
+        this.reviewIds = reviewIds;
     }
 }

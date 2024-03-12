@@ -5,6 +5,7 @@ import java.util.List;
 public class UserDTO {
     private String username;
     private List<Long> loans;
+    private List<Long> reviews;
 
     public String getUsername() {
         return username;
@@ -20,6 +21,21 @@ public class UserDTO {
 
     public void setLoans(List<Long> loans) {
         this.loans = loans;
+    }
+
+    public List<Long> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Long> reviewIds) {
+        this.reviews = reviewIds;
+    }
+
+    public void addReview(Long reviewId) {
+        this.reviews.add(reviewId);
+    }
+    public void removeReview(Long reviewId) {
+        this.reviews.remove(reviewId);
     }
 }
 

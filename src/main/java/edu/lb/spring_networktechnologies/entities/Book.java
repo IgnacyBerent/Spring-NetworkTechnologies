@@ -23,8 +23,11 @@ public class Book {
 
     private Long availableCopies;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Loan> loaned;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Review> reviews;
 
     public Long getBookId() {
         return bookId;
@@ -106,5 +109,32 @@ public class Book {
             }
         }
         return false;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public void addReview(Review review) {
+        this.reviews.add(review);
+    }
+
+    public void removeReview(Review review) {
+        this.reviews.remove(review);
+    }
+
+    public Double getAverageRating() {
+        if (reviews.size() == 0) {
+            return 0.0;
+        }
+        Double sum = 0.0;
+        for (Review review : reviews) {
+            sum += review.getRating();
+        }
+        return sum / reviews.size();
     }
 }

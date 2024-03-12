@@ -8,8 +8,8 @@ public class UserCreateDTO {
     private String role;
     private String email;
     private String name;
-
     private List<Long> loans;
+    private List<Long> reviews;
 
     public String getUsername() {
         return username;
@@ -57,5 +57,13 @@ public class UserCreateDTO {
 
     public void setLoans(List<Long> loans) {
         this.loans = loans;
+    }
+
+    public List<Long> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Long> reviewIds) {
+        this.reviews = reviewIds;
     }
 }

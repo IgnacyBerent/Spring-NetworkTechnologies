@@ -23,6 +23,9 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Loan> loans;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Review> reviews;
+
     public Long getUserId() {
         return userId;
     }
@@ -93,5 +96,21 @@ public class User {
 
     public boolean hasLoans() {
         return !this.loans.isEmpty();
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public void addReview(Review review) {
+        this.reviews.add(review);
+    }
+
+    public void removeReview(Review review) {
+        this.reviews.remove(review);
     }
 }

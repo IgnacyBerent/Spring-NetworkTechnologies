@@ -1,5 +1,9 @@
 package edu.lb.spring_networktechnologies.dtos.book;
 
+import edu.lb.spring_networktechnologies.entities.Review;
+
+import java.util.List;
+
 public class BookDTO {
     private String isbn;
     private String title;
@@ -9,6 +13,7 @@ public class BookDTO {
     private Long availableCopies;
 
     private Boolean isLoaned;
+    private List<Long> reviewIds;
 
     public String getIsbn() {
         return isbn;
@@ -65,4 +70,24 @@ public class BookDTO {
     public void setLoaned(Boolean isLoaned) {
         this.isLoaned = isLoaned;
     }
+
+    public List<Long> getReviewIds() {
+        return reviewIds;
+    }
+
+    public void setReviewIds(List<Review> reviews) {
+        for (Review review : reviews) {
+            this.reviewIds.add(review.getReviewId());
+        }
+    }
+
+    public void addReviewId(Long reviewId) {
+        this.reviewIds.add(reviewId);
+    }
+
+    public void removeReviewId(Long reviewId) {
+        this.reviewIds.remove(reviewId);
+    }
+
+
 }
