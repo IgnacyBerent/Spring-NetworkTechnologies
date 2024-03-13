@@ -5,16 +5,23 @@ import edu.lb.spring_networktechnologies.infrastructure.dtos.user.CreateUserResp
 import edu.lb.spring_networktechnologies.infrastructure.dtos.user.GetUserDto;
 import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
 @Service
 public class UserService {
+
+    @Value("${jwt.key}")
+    private String key;
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -70,5 +77,23 @@ public class UserService {
             throw new RuntimeException("User not found");
         }
         userRepository.deleteById(id);
+    }
+
+    public String loginWithEmailAndPassword(String email, String password) {
+        UserEntity user = (UserEntity) userRepository.findByEmail(email);
+
+        if(passwordEncoder.matches(password, user.getPassword())) { // check password with password encoder
+            long millis = System.currentTimeMillis();
+            String token = Jwts.builder()
+                    .issuedAt(new Date(millis))
+                    .expiration(new Date(millis + 5*60*1000)) // 5 minutes
+                    .claim("id", user.getId())
+                    .claim("role", user.getRole())
+                    .signWith(SignatureAlgorithm.HS256,key)
+                    .compact();
+            return token;
+    } else {
+            return null;
+        }
     }
 }
