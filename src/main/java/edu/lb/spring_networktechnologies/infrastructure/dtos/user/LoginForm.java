@@ -1,4 +1,4 @@
-package edu.lb.spring_networktechnologies.security;
+package edu.lb.spring_networktechnologies.infrastructure.dtos.user;
 
 
 public class LoginForm {

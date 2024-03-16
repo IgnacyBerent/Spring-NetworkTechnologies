@@ -28,9 +28,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.addFilterBefore(new JJWTTokenFilter(key), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/something").hasRole("ADMIN") // example
-                        .requestMatchers("/book/**").hasRole("READER")
+                        .requestMatchers("login").permitAll()
+                        .requestMatchers("api/book/**").hasRole("READER")
+                        .requestMatchers("api/loan/**").hasRole("READER")
+                        .requestMatchers("api/review/**").permitAll()
+                        .requestMatchers("api/user/**").hasRole("STAFF")
                 ).build();
     }
 }

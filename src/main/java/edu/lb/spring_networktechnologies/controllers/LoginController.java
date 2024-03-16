@@ -1,6 +1,6 @@
 package edu.lb.spring_networktechnologies.controllers;
 
-import edu.lb.spring_networktechnologies.security.LoginForm;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.user.LoginForm;
 import edu.lb.spring_networktechnologies.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
