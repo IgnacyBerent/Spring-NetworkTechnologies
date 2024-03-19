@@ -9,8 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -26,13 +26,16 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.addFilterBefore(new JJWTTokenFilter(key), UsernamePasswordAuthenticationFilter.class)
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
+                .addFilterBefore(new JJWTTokenFilter(key), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers("login").permitAll()
                         .requestMatchers("api/book/**").hasRole("READER")
                         .requestMatchers("api/loan/**").hasRole("READER")
                         .requestMatchers("api/review/**").permitAll()
-                        .requestMatchers("api/user/**").hasRole("STAFF")
-                ).build();
+                        .requestMatchers("api/user/**").hasRole("STAFF"))
+                .build();
     }
 }
