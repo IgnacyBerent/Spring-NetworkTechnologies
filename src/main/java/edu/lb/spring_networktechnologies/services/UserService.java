@@ -80,7 +80,11 @@ public class UserService {
     }
 
     public String loginWithEmailAndPassword(String email, String password) {
-        UserEntity user = (UserEntity) userRepository.findByEmail(email);
+        UserEntity user = new ArrayList<>(userRepository.findByEmail(email)).get(0);
+
+        if (user == null) {
+            return null;
+        }
 
         if(passwordEncoder.matches(password, user.getPassword())) { // check password with password encoder
             long millis = System.currentTimeMillis();
