@@ -1,6 +1,8 @@
 package edu.lb.spring_networktechnologies.infrastructure.entities;
 
 import java.util.List;
+
+import edu.lb.spring_networktechnologies.commonTypes.UserRole;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,20 +14,14 @@ public class UserEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "username", unique = true)
-    private String username;
-
-    @Column(name = "password")
-    private String password;
-
-    @Column(name = "role")
-    private String role;
-
-    @Column(name = "email", unique = true)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     @Column(name = "name")
     private String name;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private AuthEntity auth;
 
     @OneToMany(cascade = CascadeType.ALL)
     @Column(name = "loans")
@@ -39,32 +35,8 @@ public class UserEntity {
         return id;
     }
 
-    public void setId(Long userId) {
-        this.id = userId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getEmail() {
@@ -83,6 +55,14 @@ public class UserEntity {
         this.name = name;
     }
 
+    public AuthEntity getAuth() {
+        return auth;
+    }
+
+    public void setAuth(AuthEntity auth) {
+        this.auth = auth;
+    }
+
     public List<LoanEntity> getLoans() {
         return loans;
     }
@@ -91,35 +71,11 @@ public class UserEntity {
         this.loans = loans;
     }
 
-    public void addLoan(LoanEntity loan) {
-        this.loans.add(loan);
-    }
-
-    public void removeLoan(LoanEntity loan) {
-        this.loans.remove(loan);
-    }
-
-    public void clearLoans() {
-        this.loans.clear();
-    }
-
-    public boolean hasLoans() {
-        return !this.loans.isEmpty();
-    }
-
     public List<ReviewEntity> getReviews() {
         return reviews;
     }
 
     public void setReviews(List<ReviewEntity> reviews) {
         this.reviews = reviews;
-    }
-
-    public void addReview(ReviewEntity review) {
-        this.reviews.add(review);
-    }
-
-    public void removeReview(ReviewEntity review) {
-        this.reviews.remove(review);
     }
 }

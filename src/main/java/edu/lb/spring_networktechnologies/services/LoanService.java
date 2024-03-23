@@ -37,7 +37,7 @@ public class LoanService {
                 .map(loan -> new GetLoanDto(
                         loan.getId(),
                         loan.getBook().getTitle(),
-                        loan.getUser().getUsername(),
+                        loan.getUser().getName(),
                         loan.getLoanDate(),
                         loan.getDueDate(),
                         loan.getReturnDate()
@@ -50,7 +50,7 @@ public class LoanService {
         return new GetLoanDto(
                 loanEntity.getId(),
                 loanEntity.getBook().getTitle(),
-                loanEntity.getUser().getUsername(),
+                loanEntity.getUser().getName(),
                 loanEntity.getLoanDate(),
                 loanEntity.getDueDate(),
                 loanEntity.getReturnDate()

@@ -38,7 +38,7 @@ public class ReviewService {
                 .map(review -> new GetReviewDto(
                         review.getId(),
                         review.getBook().getTitle(),
-                        review.getUser().getUsername(),
+                        review.getUser().getName(),
                         review.getRating(),
                         review.getComment(),
                         review.getReviewDate()
@@ -51,7 +51,7 @@ public class ReviewService {
         return new GetReviewDto(
                 reviewEntity.getId(),
                 reviewEntity.getBook().getTitle(),
-                reviewEntity.getUser().getUsername(),
+                reviewEntity.getUser().getName(),
                 reviewEntity.getRating(),
                 reviewEntity.getComment(),
                 reviewEntity.getReviewDate()

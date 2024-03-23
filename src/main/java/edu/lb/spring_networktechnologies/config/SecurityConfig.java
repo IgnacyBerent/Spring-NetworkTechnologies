@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new JJWTTokenFilter(key), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers("login").permitAll()
+                        .requestMatchers("api/auth/**").permitAll()
                         .requestMatchers("api/book/**").hasRole("READER")
                         .requestMatchers("api/loan/**").hasRole("READER")
                         .requestMatchers("api/review/**").permitAll()
