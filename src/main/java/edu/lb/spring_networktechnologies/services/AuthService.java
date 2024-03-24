@@ -33,26 +33,26 @@ public class AuthService {
     public RegisterResponseDto register(RegisterDto registerDto){
         UserEntity userEntity = new UserEntity();
         userEntity.setEmail(registerDto.getEmail());
-        UserEntity createdUser = userRepository.save(userEntity);
+        userRepository.save(userEntity);
 
         AuthEntity authEntity = new AuthEntity();
         authEntity.setUsername(registerDto.getUsername());
         authEntity.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         authEntity.setRole(registerDto.getRole());
-        authEntity.setUser(createdUser);
+        authEntity.setUser(userEntity);
 
-        AuthEntity createdAuth = authRepository.save(authEntity);
-        return new RegisterResponseDto(createdAuth.getUsername(), createdAuth.getRole());
+        authRepository.save(authEntity);
+        return new RegisterResponseDto(userEntity.getId(), authEntity.getUsername(), authEntity.getRole());
     }
 
     public LoginResponseDto login(LoginDto loginDto){
-        Optional<AuthEntity> authEntity = authRepository.findByUsername(loginDto.getUsername());
+        AuthEntity authEntity = authRepository.findByUsername(loginDto.getUsername()).orElseThrow(RuntimeException::new);
 
-        if (authEntity.isEmpty() || !passwordEncoder.matches(loginDto.getPassword(), authEntity.get().getPassword())) {
+        if (!passwordEncoder.matches(loginDto.getPassword(), authEntity.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
 
-        String token = jwtService.generateToken(authEntity.get());
+        String token = jwtService.generateToken(authEntity);
         return new LoginResponseDto(token);
     }
 }
