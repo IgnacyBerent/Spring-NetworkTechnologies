@@ -4,7 +4,6 @@ import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.RegisterDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.RegisterResponseDto;
-import edu.lb.spring_networktechnologies.infrastructure.entities.AuthEntity;
 import edu.lb.spring_networktechnologies.services.AuthService;
 import edu.lb.spring_networktechnologies.services.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;

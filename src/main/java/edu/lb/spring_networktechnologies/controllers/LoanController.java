@@ -1,8 +1,5 @@
 package edu.lb.spring_networktechnologies.controllers;
 
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookDto;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookResponseDto;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoanDto;

@@ -3,7 +3,6 @@ package edu.lb.spring_networktechnologies.controllers;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.user.GetUserDto;
 import edu.lb.spring_networktechnologies.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
