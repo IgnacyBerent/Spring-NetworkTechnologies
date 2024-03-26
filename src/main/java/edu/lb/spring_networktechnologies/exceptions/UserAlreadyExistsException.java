@@ -8,8 +8,13 @@ public class UserAlreadyExistsException extends RuntimeException {
         super(message);
     }
 
-    public static ResponseStatusException create(String username) {
+    public static ResponseStatusException byUsername(String username) {
         UserAlreadyExistsException exception = new UserAlreadyExistsException("User with username: " + username + " already exists");
+        return new ResponseStatusException(HttpStatus.CONFLICT, exception.getMessage(), exception);
+    }
+
+    public static ResponseStatusException byEmail(String email) {
+        UserAlreadyExistsException exception = new UserAlreadyExistsException("User with email: " + email + " already exists");
         return new ResponseStatusException(HttpStatus.CONFLICT, exception.getMessage(), exception);
     }
 

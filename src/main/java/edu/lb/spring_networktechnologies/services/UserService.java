@@ -1,7 +1,10 @@
 package edu.lb.spring_networktechnologies.services;
 
+import edu.lb.spring_networktechnologies.exceptions.UserNotFoundException;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.user.DeleteUserDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.user.GetUserDto;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +12,7 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 @Service
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -37,10 +41,12 @@ public class UserService {
     }
 
 
-    public void delete(Long id) {
+    public DeleteUserDto delete(Long id) {
         if(!userRepository.existsById(id)) {
-            throw new RuntimeException("User not found");
+            log.info("User with given id not found");
+            throw UserNotFoundException.create();
         }
         userRepository.deleteById(id);
+        return new DeleteUserDto(id);
     }
 }
