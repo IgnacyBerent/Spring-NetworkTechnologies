@@ -1,5 +1,6 @@
 package edu.lb.spring_networktechnologies.services;
 
+import edu.lb.spring_networktechnologies.exceptions.UserAlreadyExistsException;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.RegisterDto;
@@ -11,6 +12,9 @@ import edu.lb.spring_networktechnologies.infrastructure.repositores.UserReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -28,9 +32,18 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
+    @Transactional
     public RegisterResponseDto register(RegisterDto registerDto){
+        Optional<AuthEntity> existingAuthEntity = authRepository.findByUsername(registerDto.getUsername());
+        if (existingAuthEntity.isPresent()) {
+            throw UserAlreadyExistsException.create(registerDto.getUsername());
+        }
+
+
         UserEntity userEntity = new UserEntity();
         userEntity.setEmail(registerDto.getEmail());
+        userEntity.setFirstName(registerDto.getFirstName());
+        userEntity.setLastName(registerDto.getLastName());
         userRepository.save(userEntity);
 
         AuthEntity authEntity = new AuthEntity();

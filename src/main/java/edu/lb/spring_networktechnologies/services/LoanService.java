@@ -12,7 +12,6 @@ import edu.lb.spring_networktechnologies.infrastructure.repositores.UserReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -37,7 +36,7 @@ public class LoanService {
                 .map(loan -> new GetLoanDto(
                         loan.getId(),
                         loan.getBook().getTitle(),
-                        loan.getUser().getName(),
+                        loan.getUser().getFirstName(),
                         loan.getLoanDate(),
                         loan.getDueDate(),
                         loan.getReturnDate()
@@ -50,7 +49,7 @@ public class LoanService {
         return new GetLoanDto(
                 loanEntity.getId(),
                 loanEntity.getBook().getTitle(),
-                loanEntity.getUser().getName(),
+                loanEntity.getUser().getFirstName(),
                 loanEntity.getLoanDate(),
                 loanEntity.getDueDate(),
                 loanEntity.getReturnDate()

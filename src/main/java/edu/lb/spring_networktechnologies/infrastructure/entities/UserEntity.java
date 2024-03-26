@@ -2,7 +2,6 @@ package edu.lb.spring_networktechnologies.infrastructure.entities;
 
 import java.util.List;
 
-import edu.lb.spring_networktechnologies.commonTypes.UserRole;
 import jakarta.persistence.*;
 
 @Entity
@@ -17,8 +16,11 @@ public class UserEntity {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "firstName")
+    private String firstName;
+
+    @Column(name = "lastName")
+    private String lastName;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private AuthEntity auth;
@@ -47,12 +49,12 @@ public class UserEntity {
         this.email = email;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String fName) {
+        this.firstName = fName;
     }
 
     public AuthEntity getAuth() {
@@ -77,5 +79,13 @@ public class UserEntity {
 
     public void setReviews(List<ReviewEntity> reviews) {
         this.reviews = reviews;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

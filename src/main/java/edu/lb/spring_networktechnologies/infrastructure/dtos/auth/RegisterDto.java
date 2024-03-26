@@ -5,12 +5,16 @@ import edu.lb.spring_networktechnologies.commonTypes.UserRole;
 public class RegisterDto {
     private String password;
     private String username;
+    private String firstName;
+    private String lastName;
     private String email;
     private UserRole role;
 
-    public RegisterDto(String password, String username, String email, UserRole role) {
+    public RegisterDto(String password, String username, String firstName, String lastName, String email, UserRole role) {
         this.password = password;
         this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.role = role;
     }
@@ -48,5 +52,21 @@ public class RegisterDto {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

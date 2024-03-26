@@ -23,7 +23,7 @@ public class UserService {
 
         return StreamSupport.stream(users.spliterator(), false).map(user -> new GetUserDto(
                 user.getId(),
-                user.getName()
+                user.getFirstName()
         )).toList();
     }
 
@@ -32,7 +32,7 @@ public class UserService {
 
         return new GetUserDto(
             userEntity.getId(),
-            userEntity.getName()
+            userEntity.getFirstName()
         );
     }
 
