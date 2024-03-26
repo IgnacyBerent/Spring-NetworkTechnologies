@@ -9,14 +9,15 @@ import edu.lb.spring_networktechnologies.infrastructure.entities.AuthEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.AuthRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 @Service
+@Slf4j
 public class AuthService {
 
     private final AuthRepository authRepository;
@@ -34,11 +35,14 @@ public class AuthService {
 
     @Transactional
     public RegisterResponseDto register(RegisterDto registerDto){
-        Optional<AuthEntity> existingAuthEntity = authRepository.findByUsername(registerDto.getUsername());
-        if (existingAuthEntity.isPresent()) {
-            throw UserAlreadyExistsException.create(registerDto.getUsername());
+        if (authRepository.existsByUsername(registerDto.getUsername())) {
+            log.info("User with given username already exists");
+            throw UserAlreadyExistsException.byUsername(registerDto.getUsername());
         }
-
+        if (userRepository.existsByEmail(registerDto.getEmail())) {
+            log.info("User with given email already exists");
+            throw UserAlreadyExistsException.byEmail(registerDto.getEmail());
+        }
 
         UserEntity userEntity = new UserEntity();
         userEntity.setEmail(registerDto.getEmail());

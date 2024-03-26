@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("api/book/**").hasRole("READER")
                         .requestMatchers("api/loan/**").hasRole("READER")
                         .requestMatchers("api/review/**").permitAll()
-                        .requestMatchers("api/user/**").hasRole("STAFF"))
+                        .requestMatchers("api/user/**").hasRole("ADMIN"))
                 .build();
     }
 

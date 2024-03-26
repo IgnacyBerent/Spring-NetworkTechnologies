@@ -6,15 +6,11 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
-    // select user by email
-    @Query("SELECT u FROM UserEntity u WHERE u.email = ?1")
-    Collection<UserEntity> findByEmail(String email);
-
-    // exists by email
-    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UserEntity u WHERE u.email = ?1")
+    Optional<UserEntity> findByEmail(String email);
     boolean existsByEmail(String email);
 }
