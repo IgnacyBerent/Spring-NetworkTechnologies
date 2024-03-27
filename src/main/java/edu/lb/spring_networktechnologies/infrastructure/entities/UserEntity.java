@@ -16,10 +16,10 @@ public class UserEntity {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "firstName")
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "lastName")
+    @Column(name = "last_name")
     private String lastName;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)

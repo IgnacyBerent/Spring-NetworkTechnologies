@@ -14,20 +14,23 @@ public class LoanEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     @ManyToOne
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id", nullable = false)
     private BookEntity book;
 
-    @Column(name = "loan_date")
+    @Column(name = "loan_date", nullable = false)
+    @Basic
     private LocalDate LoanDate;
 
-    @Column(name = "due_date")
+    @Column(name = "due_date", nullable = false)
+    @Basic
     private LocalDate DueDate;
 
     @Column(name = "return_date")
+    @Basic
     private LocalDate ReturnDate;
 
     public Long getId() {

@@ -13,20 +13,23 @@ public class ReviewEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id", nullable = false)
     private BookEntity book;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @Column(name = "rating")
+    @Column(name = "rating", nullable = false)
+    @Basic
     private Float rating;
 
     @Column(name = "comment")
+    @Basic
     private String comment;
 
-    @Column(name = "review_date")
+    @Column(name = "review_date", nullable = false)
+    @Basic
     private LocalDate reviewDate;
 
     public Long getId() {
