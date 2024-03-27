@@ -1,5 +1,6 @@
 package edu.lb.spring_networktechnologies.services;
 
+import edu.lb.spring_networktechnologies.exceptions.AlreadyExistsException;
 import edu.lb.spring_networktechnologies.exceptions.NotFoundException;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookResponseDto;
@@ -53,6 +54,12 @@ public class BookService {
     }
 
     public CreateBookResponseDto create(CreateBookDto book) {
+
+        // check if book with given isbn already exists
+        if (bookRepository.existsByIsbn(book.getIsbn())) {
+            throw AlreadyExistsException.bookByIsbn(book.getIsbn());
+        }
+
         var bookEntity = new BookEntity();
         bookEntity.setIsbn(book.getIsbn());
         bookEntity.setTitle(book.getTitle());

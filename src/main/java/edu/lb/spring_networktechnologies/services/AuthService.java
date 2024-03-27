@@ -1,7 +1,7 @@
 package edu.lb.spring_networktechnologies.services;
 
 import edu.lb.spring_networktechnologies.exceptions.InvalidCredentialsException;
-import edu.lb.spring_networktechnologies.exceptions.UserAlreadyExistsException;
+import edu.lb.spring_networktechnologies.exceptions.AlreadyExistsException;
 import edu.lb.spring_networktechnologies.exceptions.NotFoundException;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginResponseDto;
@@ -41,11 +41,11 @@ public class AuthService {
     public RegisterResponseDto register(RegisterDto registerDto){
         if (authRepository.existsByUsername(registerDto.getUsername())) {
             log.info("User with given username already exists");
-            throw UserAlreadyExistsException.byUsername(registerDto.getUsername());
+            throw AlreadyExistsException.userByUsername(registerDto.getUsername());
         }
         if (userRepository.existsByEmail(registerDto.getEmail())) {
             log.info("User with given email already exists");
-            throw UserAlreadyExistsException.byEmail(registerDto.getEmail());
+            throw AlreadyExistsException.userByEmail(registerDto.getEmail());
         }
 
         UserEntity userEntity = new UserEntity();
