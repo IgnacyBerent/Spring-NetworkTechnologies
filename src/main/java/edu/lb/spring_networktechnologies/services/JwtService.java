@@ -28,36 +28,36 @@ public class JwtService {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    public boolean isTokenValid(String token){
+    public boolean isTokenValid(String token) {
         try {
             return !isTokenExpired(token);
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public String extractUsername(String token){
+    public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public UserRole extractRole(String token){
+    public UserRole extractRole(String token) {
         return UserRole.valueOf(extractClaim(token, claims -> claims.get("role", String.class)));
     }
 
-    private boolean isTokenExpired(String token){
+    private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpiration(String token){
+    private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token){
+    private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
@@ -65,7 +65,7 @@ public class JwtService {
                 .getPayload();
     }
 
-    private String generateToken(Map<String, Object> extraClaims, AuthEntity userDetails){
+    private String generateToken(Map<String, Object> extraClaims, AuthEntity userDetails) {
         extraClaims.put("role", userDetails.getRole());
         return Jwts.builder()
                 .setClaims(extraClaims)
@@ -76,7 +76,7 @@ public class JwtService {
                 .compact();
     }
 
-    private SecretKey getSigningKey(){
+    private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(key);
         return Keys.hmacShaKeyFor(keyBytes);
     }
