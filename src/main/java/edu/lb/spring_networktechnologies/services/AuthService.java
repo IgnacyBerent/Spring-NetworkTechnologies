@@ -74,6 +74,7 @@ public class AuthService {
         }
 
         if (!passwordEncoder.matches(loginDto.getPassword(), authEntity.get().getPassword())) {
+            log.info("Invalid credentials");
             throw InvalidCredentialsException.create();
         }
 

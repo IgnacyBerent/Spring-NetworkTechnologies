@@ -32,7 +32,7 @@ public class UserService {
     }
 
     public GetUserDto getOne(Long id) {
-        var userEntity = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        var userEntity = userRepository.findById(id).orElseThrow(NotFoundException::user);
 
         return new GetUserDto(
             userEntity.getId(),

@@ -7,6 +7,7 @@ import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookResp
 import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDto;
 import edu.lb.spring_networktechnologies.infrastructure.entities.BookEntity;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.BookRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
+@Slf4j
 public class BookService {
     private final BookRepository bookRepository;
 
@@ -57,6 +59,7 @@ public class BookService {
 
         // check if book with given isbn already exists
         if (bookRepository.existsByIsbn(book.getIsbn())) {
+            log.info("Book with given ISBN already exists");
             throw AlreadyExistsException.bookByIsbn(book.getIsbn());
         }
 
@@ -84,6 +87,7 @@ public class BookService {
 
     public void delete(Long id) {
         if(!bookRepository.existsById(id)) {
+            log.info("Book with given id not found");
             throw NotFoundException.book();
         }
         bookRepository.deleteById(id);

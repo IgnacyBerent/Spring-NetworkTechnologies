@@ -6,10 +6,8 @@ import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginResponseD
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.RegisterDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.RegisterResponseDto;
 import edu.lb.spring_networktechnologies.services.AuthService;
-import edu.lb.spring_networktechnologies.services.JwtService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,21 +15,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;
-    private final JwtService jwtService;
 
     @Autowired
-    public AuthController(AuthService authService, JwtService jwtService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.jwtService = jwtService;
     }
 
 
