@@ -1,6 +1,8 @@
 package edu.lb.spring_networktechnologies.services;
 
+import edu.lb.spring_networktechnologies.exceptions.InvalidCredentialsException;
 import edu.lb.spring_networktechnologies.exceptions.UserAlreadyExistsException;
+import edu.lb.spring_networktechnologies.exceptions.UserNotFoundException;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.RegisterDto;
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 
 @Service
@@ -61,13 +65,19 @@ public class AuthService {
     }
 
     public LoginResponseDto login(LoginDto loginDto){
-        AuthEntity authEntity = authRepository.findByUsername(loginDto.getUsername()).orElseThrow(RuntimeException::new);
+        Optional<AuthEntity> authEntity = authRepository
+                .findByUsername(loginDto.getUsername());
 
-        if (!passwordEncoder.matches(loginDto.getPassword(), authEntity.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+        if (authEntity.isEmpty()) {
+            log.info("User with given username not found");
+            throw UserNotFoundException.create();
         }
 
-        String token = jwtService.generateToken(authEntity);
+        if (!passwordEncoder.matches(loginDto.getPassword(), authEntity.get().getPassword())) {
+            throw InvalidCredentialsException.create();
+        }
+
+        String token = jwtService.generateToken(authEntity.get());
         return new LoginResponseDto(token);
     }
 }
