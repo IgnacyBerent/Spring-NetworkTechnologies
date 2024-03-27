@@ -2,7 +2,7 @@ package edu.lb.spring_networktechnologies.services;
 
 import edu.lb.spring_networktechnologies.exceptions.InvalidCredentialsException;
 import edu.lb.spring_networktechnologies.exceptions.UserAlreadyExistsException;
-import edu.lb.spring_networktechnologies.exceptions.UserNotFoundException;
+import edu.lb.spring_networktechnologies.exceptions.NotFoundException;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.RegisterDto;
@@ -70,7 +70,7 @@ public class AuthService {
 
         if (authEntity.isEmpty()) {
             log.info("User with given username not found");
-            throw UserNotFoundException.create();
+            throw NotFoundException.user();
         }
 
         if (!passwordEncoder.matches(loginDto.getPassword(), authEntity.get().getPassword())) {

@@ -1,5 +1,6 @@
 package edu.lb.spring_networktechnologies.services;
 
+import edu.lb.spring_networktechnologies.exceptions.NotFoundException;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDto;
@@ -38,7 +39,7 @@ public class BookService {
     }
 
     public GetBookDto getOne(Long id) {
-        var bookEntity = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
+        var bookEntity = bookRepository.findById(id).orElseThrow(NotFoundException::book);
 
         return new GetBookDto(
                 bookEntity.getId(),
@@ -76,7 +77,7 @@ public class BookService {
 
     public void delete(Long id) {
         if(!bookRepository.existsById(id)) {
-            throw new RuntimeException("Book not found");
+            throw NotFoundException.book();
         }
         bookRepository.deleteById(id);
     }

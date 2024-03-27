@@ -1,6 +1,6 @@
 package edu.lb.spring_networktechnologies.services;
 
-import edu.lb.spring_networktechnologies.exceptions.UserNotFoundException;
+import edu.lb.spring_networktechnologies.exceptions.NotFoundException;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.user.DeleteUserDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.user.GetUserDto;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
@@ -44,7 +44,7 @@ public class UserService {
     public DeleteUserDto delete(Long id) {
         if(!userRepository.existsById(id)) {
             log.info("User with given id not found");
-            throw UserNotFoundException.create();
+            throw NotFoundException.user();
         }
         userRepository.deleteById(id);
         return new DeleteUserDto(id);
