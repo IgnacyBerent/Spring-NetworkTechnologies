@@ -1,11 +1,17 @@
 package edu.lb.spring_networktechnologies.infrastructure.dtos.loan;
 
+import jakarta.validation.constraints.NotEmpty;
+
 import java.time.LocalDate;
 
 public class CreateLoanDto {
+    @NotEmpty(message = "User ID is required")
     private Long userId;
+    @NotEmpty(message = "Book ID is required")
     private Long bookId;
+    @NotEmpty(message = "Loan date is required")
     private LocalDate loanDate;
+    @NotEmpty(message = "Due date is required")
     private LocalDate dueDate;
 
     public CreateLoanDto(Long userId, Long bookId, LocalDate loanDate, LocalDate dueDate) {

@@ -1,12 +1,15 @@
 package edu.lb.spring_networktechnologies.controllers;
 
+import edu.lb.spring_networktechnologies.exceptions.CheckBindingExceptions;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.review.CreateReviewDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.review.CreateReviewResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.review.GetReviewDto;
 import edu.lb.spring_networktechnologies.services.ReviewService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +31,8 @@ public class ReviewController {
 
     @PostMapping("/add")
     @ResponseStatus(code = HttpStatus.CREATED) //code 201
-    public ResponseEntity<CreateReviewResponseDto> create(@RequestBody CreateReviewDto review) {
+    public ResponseEntity<CreateReviewResponseDto> create(@Valid @RequestBody CreateReviewDto review, BindingResult bindingResult) {
+        CheckBindingExceptions.check(bindingResult);
         var newReview = reviewService.create(review);
         return new ResponseEntity<>(newReview, HttpStatus.CREATED);
     }

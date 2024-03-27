@@ -1,13 +1,18 @@
 package edu.lb.spring_networktechnologies.infrastructure.dtos.review;
 
+import jakarta.validation.constraints.NotEmpty;
+
 import java.time.LocalDate;
 
 public class CreateReviewDto {
+    @NotEmpty(message = "Book ID is required")
     private Long bookId;
+    @NotEmpty(message = "User ID is required")
     private Long userId;
+    @NotEmpty(message = "Rating is required")
     private Float rating;
+    @NotEmpty(message = "Comment is required")
     private String comment;
-    private LocalDate reviewDate;
 
     public CreateReviewDto(Long bookId, Long userId, Float rating, String comment, LocalDate reviewDate) {
         this.bookId = bookId;
@@ -49,13 +54,5 @@ public class CreateReviewDto {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public LocalDate getReviewDate() {
-        return reviewDate;
-    }
-
-    public void setReviewDate(LocalDate reviewDate) {
-        this.reviewDate = reviewDate;
     }
 }

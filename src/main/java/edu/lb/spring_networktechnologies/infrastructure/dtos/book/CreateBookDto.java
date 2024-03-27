@@ -1,11 +1,19 @@
 package edu.lb.spring_networktechnologies.infrastructure.dtos.book;
 
+import jakarta.validation.constraints.NotEmpty;
+
 public class CreateBookDto {
+    @NotEmpty(message = "ISBN is required")
     private String isbn;
+    @NotEmpty(message = "Title is required")
     private String title;
+    @NotEmpty(message = "Author is required")
     private String author;
+    @NotEmpty(message = "Publisher is required")
     private String publisher;
+    @NotEmpty(message = "Publication year is required")
     private int publicationYear;
+    @NotEmpty(message = "Available copies is required")
     private int availableCopies;
 
     public CreateBookDto(String isbn, String title, String author, String publisher, int publicationYear, int availableCopies) {
