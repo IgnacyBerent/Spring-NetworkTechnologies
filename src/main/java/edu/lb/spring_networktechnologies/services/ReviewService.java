@@ -1,5 +1,6 @@
 package edu.lb.spring_networktechnologies.services;
 
+import edu.lb.spring_networktechnologies.exceptions.NotFoundException;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.review.CreateReviewDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.review.CreateReviewResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.review.GetReviewDto;
@@ -9,6 +10,7 @@ import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.BookRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.ReviewRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
+@Slf4j
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
@@ -46,7 +49,7 @@ public class ReviewService {
     }
 
     public GetReviewDto getOne(Long id) {
-        var reviewEntity = reviewRepository.findById(id).orElseThrow(() -> new RuntimeException("Review not found"));
+        var reviewEntity = reviewRepository.findById(id).orElseThrow(NotFoundException::review);
 
         return new GetReviewDto(
                 reviewEntity.getId(),
@@ -85,7 +88,8 @@ public class ReviewService {
 
     public void delete(Long id) {
         if(!reviewRepository.existsById(id)) {
-            throw new RuntimeException("Review not found");
+            log.info("Review with id: {} not found", id);
+            throw NotFoundException.review();
         }
         reviewRepository.deleteById(id);
     }

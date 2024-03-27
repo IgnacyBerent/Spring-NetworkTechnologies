@@ -1,5 +1,6 @@
 package edu.lb.spring_networktechnologies.services;
 
+import edu.lb.spring_networktechnologies.exceptions.NotFoundException;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoanDto;
@@ -9,6 +10,7 @@ import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.BookRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.LoanRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
+@Slf4j
 public class LoanService {
 
     private final LoanRepository loanRepository;
@@ -44,7 +47,7 @@ public class LoanService {
     }
 
     public GetLoanDto getOne(Long id) {
-        var loanEntity = loanRepository.findById(id).orElseThrow(() -> new RuntimeException("Loan not found"));
+        var loanEntity = loanRepository.findById(id).orElseThrow(NotFoundException::loan);
 
         return new GetLoanDto(
                 loanEntity.getId(),
@@ -77,7 +80,8 @@ public class LoanService {
 
     public void delete(Long id) {
         if(!loanRepository.existsById(id)) {
-            throw new RuntimeException("Loan not found");
+            log.info("Loan with id: {} not found", id);
+            throw NotFoundException.loan();
         }
         loanRepository.deleteById(id);
     }

@@ -20,4 +20,14 @@ public class NotFoundException extends RuntimeException {
         return new ResponseStatusException(HttpStatus.NOT_FOUND, exception.getMessage(), exception);
     }
 
+    public static ResponseStatusException loan() {
+        NotFoundException exception = new NotFoundException("Loan not found");
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, exception.getMessage(), exception);
+    }
+
+    public static ResponseStatusException review() {
+        NotFoundException exception = new NotFoundException("Review not found");
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, exception.getMessage(), exception);
+    }
+
 }
