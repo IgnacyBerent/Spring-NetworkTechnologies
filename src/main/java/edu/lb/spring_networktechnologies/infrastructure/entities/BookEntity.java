@@ -31,11 +31,11 @@ public class BookEntity {
     @Column(name = "available_copies")
     private int availableCopies;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     @Column(name = "loaned")
     private List<LoanEntity> loaned;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     @Column(name = "reviews")
     private List<ReviewEntity> reviews;
 
