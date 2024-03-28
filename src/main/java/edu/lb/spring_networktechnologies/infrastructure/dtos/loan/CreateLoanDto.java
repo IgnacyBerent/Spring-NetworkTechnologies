@@ -9,15 +9,12 @@ public class CreateLoanDto {
     private Long userId;
     @NotEmpty(message = "Book ID is required")
     private Long bookId;
-    @NotEmpty(message = "Loan date is required")
-    private LocalDate loanDate;
     @NotEmpty(message = "Due date is required")
     private LocalDate dueDate;
 
     public CreateLoanDto(Long userId, Long bookId, LocalDate loanDate, LocalDate dueDate) {
         this.userId = userId;
         this.bookId = bookId;
-        this.loanDate = loanDate;
         this.dueDate = dueDate;
     }
 
@@ -38,14 +35,6 @@ public class CreateLoanDto {
 
     public void setBookId(Long bookId) {
         this.bookId = bookId;
-    }
-
-    public LocalDate getLoanDate() {
-        return loanDate;
-    }
-
-    public void setLoanDate(LocalDate loanDate) {
-        this.loanDate = loanDate;
     }
 
     public LocalDate getDueDate() {

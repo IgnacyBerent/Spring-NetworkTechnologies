@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -60,12 +61,13 @@ public class LoanService {
     }
 
     public CreateLoanResponseDto create(CreateLoanDto loan) {
-        var loanEntity = new LoanEntity();
-        UserEntity user = userRepository.findById(loan.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
-        BookEntity book = bookRepository.findById(loan.getBookId()).orElseThrow(() -> new RuntimeException("Book not found"));
+        UserEntity user = userRepository.findById(loan.getUserId()).orElseThrow(NotFoundException::user);
+        BookEntity book = bookRepository.findById(loan.getBookId()).orElseThrow(NotFoundException::book);
+        LocalDate currentDate = LocalDate.now();
+        LoanEntity loanEntity = new LoanEntity();
         loanEntity.setUser(user);
         loanEntity.setBook(book);
-        loanEntity.setLoanDate(loan.getLoanDate());
+        loanEntity.setLoanDate(currentDate);
         loanEntity.setDueDate(loan.getDueDate());
         var newLoan = loanRepository.save(loanEntity);
 
