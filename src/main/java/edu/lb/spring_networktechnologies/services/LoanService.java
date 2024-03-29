@@ -29,6 +29,7 @@ public class LoanService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
+    @Autowired
     public LoanService(LoanRepository loanRepository, UserRepository userRepository, BookRepository bookRepository) {
         this.loanRepository = loanRepository;
         this.userRepository = userRepository;
