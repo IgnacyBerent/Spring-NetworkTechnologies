@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -19,6 +20,13 @@ public class UserController {
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<GetUserDto> getMe(Principal principal) {
+        String username = principal.getName();
+        GetUserDto userDto = userService.getUserByUsername(username);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     @GetMapping("/getAll")
