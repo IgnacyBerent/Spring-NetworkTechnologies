@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/loan")
+@PostAuthorize("isAuthenticated()")
 public class LoanController {
 
     private final LoanService loanService;
@@ -26,8 +28,9 @@ public class LoanController {
     }
 
     @GetMapping("/getAll")
-    public @ResponseBody List<GetLoanDto> getAllBooks() {
-        return loanService.getAll();
+    public ResponseEntity<List<GetLoanDto>> getAll(@RequestParam(required = false) Long userId) {
+        List<GetLoanDto> loans = loanService.getAll(userId);
+        return new ResponseEntity<>(loans, HttpStatus.OK);
     }
 
     @PostMapping("/add")

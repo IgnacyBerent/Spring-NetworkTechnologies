@@ -6,6 +6,7 @@ import edu.lb.spring_networktechnologies.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -23,6 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<GetUserDto> getMe(Principal principal) {
         String username = principal.getName();
         GetUserDto userDto = userService.getUserByUsername(username);
@@ -30,16 +32,19 @@ public class UserController {
     }
 
     @GetMapping("/getAll")
+    @PreAuthorize("hasRole('ADMIN')")
     public @ResponseBody List<GetUserDto> getAllUsers() {
         return userService.getAll();
     }
 
     @GetMapping("/get/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public GetUserDto getUser(@PathVariable Long id) {
         return userService.getOne(id);
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DeleteUserDto> delete(@PathVariable Long id) {
         DeleteUserDto dto =  userService.delete(id);
         return new ResponseEntity<>(dto, HttpStatus.OK);
