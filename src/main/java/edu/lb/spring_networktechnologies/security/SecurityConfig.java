@@ -39,8 +39,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers("api/auth/login").permitAll()
                         .requestMatchers("api/auth/register").hasRole("ADMIN")
-                        .requestMatchers("api/book/**").hasRole("READER")
-                        .requestMatchers("api/loan/**").hasRole("READER")
+                        .requestMatchers("api/book/**").authenticated()
+                        .requestMatchers("api/book/add").hasRole("ADMIN")
+                        .requestMatchers("api/loan/**").authenticated()
                         .requestMatchers("api/review/**").permitAll()
                         .requestMatchers("api/user/**").hasRole("ADMIN")
                         .requestMatchers("/error").permitAll()

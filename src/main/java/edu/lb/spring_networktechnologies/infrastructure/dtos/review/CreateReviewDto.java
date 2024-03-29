@@ -1,15 +1,18 @@
 package edu.lb.spring_networktechnologies.infrastructure.dtos.review;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
 public class CreateReviewDto {
-    @NotEmpty(message = "Book ID is required")
+    @NotNull(message = "Book ID is required")
     private Long bookId;
-    @NotEmpty(message = "User ID is required")
+    @NotNull(message = "User ID is required")
     private Long userId;
-    @NotEmpty(message = "Rating is required")
+    @NotNull(message = "Rating is required")
+    @Min(value = 1, message = "Rating must be between 1 and 5")
+    @Max(value = 5, message = "Rating must be between 1 and 5")
+    @Digits(integer = 1, fraction = 1, message = "Rating must have one digit after the decimal point")
     private Float rating;
     @NotEmpty(message = "Comment is required")
     private String comment;

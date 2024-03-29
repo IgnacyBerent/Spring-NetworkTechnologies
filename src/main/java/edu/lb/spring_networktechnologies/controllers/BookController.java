@@ -39,8 +39,8 @@ public class BookController {
     }
 
     @GetMapping("/get/{id}")
-    public GetBookDto getBook(@PathVariable Long id) {
-        return bookService.getOne(id);
+    public ResponseEntity<GetBookDto> getBook(@PathVariable Long id) {
+        return new ResponseEntity<>(bookService.getOne(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

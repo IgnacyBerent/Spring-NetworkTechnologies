@@ -1,9 +1,11 @@
 package edu.lb.spring_networktechnologies.services;
 
 import edu.lb.spring_networktechnologies.exceptions.NotFoundException;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoanDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.user.GetUserDto;
 import edu.lb.spring_networktechnologies.infrastructure.entities.BookEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.LoanEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
@@ -26,24 +28,23 @@ public class LoanService {
     private final LoanRepository loanRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
-    @Autowired
-    public LoanService(LoanRepository loanRepository, BookRepository bookRepository, UserRepository userRepository) {
+
+    public LoanService(LoanRepository loanRepository, UserRepository userRepository, BookRepository bookRepository) {
         this.loanRepository = loanRepository;
-        this.bookRepository = bookRepository;
         this.userRepository = userRepository;
+        this.bookRepository = bookRepository;
     }
 
     public List<GetLoanDto> getAll() {
         var loans = loanRepository.findAll();
 
         return StreamSupport.stream(loans.spliterator(), false)
-                .map(loan -> new GetLoanDto(
-                        loan.getId(),
-                        loan.getBook().getTitle(),
-                        loan.getUser().getFirstName(),
-                        loan.getLoanDate(),
-                        loan.getDueDate(),
-                        loan.getReturnDate()
+                .map(loanEntity -> new GetLoanDto(
+                        loanEntity.getId(),
+                        loanEntity.getLoanDate(),
+                        loanEntity.getDueDate(),
+                        mapUser(loanEntity.getUser()),
+                        mapBook(loanEntity.getBook())
                 )).collect(Collectors.toList());
     }
 
@@ -52,11 +53,10 @@ public class LoanService {
 
         return new GetLoanDto(
                 loanEntity.getId(),
-                loanEntity.getBook().getTitle(),
-                loanEntity.getUser().getFirstName(),
                 loanEntity.getLoanDate(),
                 loanEntity.getDueDate(),
-                loanEntity.getReturnDate()
+                mapUser(loanEntity.getUser()),
+                mapBook(loanEntity.getBook())
         );
     }
 
@@ -87,4 +87,25 @@ public class LoanService {
         }
         loanRepository.deleteById(id);
     }
+
+    private GetUserDto mapUser(UserEntity user) {
+        return new GetUserDto(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName()
+        );
+    }
+
+    private GetBookDto mapBook(BookEntity book) {
+        return new GetBookDto(
+                book.getId(),
+                book.getIsbn(),
+                book.getTitle(),
+                book.getAuthor(),
+                book.getPublisher(),
+                book.getPublicationYear(),
+                book.getAvailableCopies() > 0
+        );
+    }
+
 }

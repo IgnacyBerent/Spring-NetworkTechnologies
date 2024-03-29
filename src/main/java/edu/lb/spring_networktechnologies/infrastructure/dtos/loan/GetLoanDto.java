@@ -1,22 +1,23 @@
 package edu.lb.spring_networktechnologies.infrastructure.dtos.loan;
 
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.user.GetUserDto;
+
 import java.time.LocalDate;
 
 public class GetLoanDto {
     private Long id;
-    private String bookTitle;
-    private String userName;
     private LocalDate dateOfLoan;
     private LocalDate dueDate;
-    private LocalDate returnDate;
+    private GetUserDto user;
+    private GetBookDto book;
 
-    public GetLoanDto(Long id, String bookTitle, String userName, LocalDate dateOfLoan, LocalDate dueDate, LocalDate returnDate) {
+    public GetLoanDto(Long id, LocalDate dateOfLoan, LocalDate dueDate, GetUserDto user, GetBookDto book) {
         this.id = id;
-        this.bookTitle = bookTitle;
-        this.userName = userName;
         this.dateOfLoan = dateOfLoan;
         this.dueDate = dueDate;
-        this.returnDate = returnDate;
+        this.user = user;
+        this.book = book;
     }
 
     public GetLoanDto() {
@@ -28,22 +29,6 @@ public class GetLoanDto {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getBookTitle() {
-        return bookTitle;
-    }
-
-    public void setBookTitle(String bookTitle) {
-        this.bookTitle = bookTitle;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public LocalDate getDateOfLoan() {
@@ -62,11 +47,19 @@ public class GetLoanDto {
         this.dueDate = dueDate;
     }
 
-    public LocalDate getReturnDate() {
-        return returnDate;
+    public GetUserDto getUser() {
+        return user;
     }
 
-    public void setReturnDate(LocalDate returnDate) {
-        this.returnDate = returnDate;
+    public void setUser(GetUserDto user) {
+        this.user = user;
+    }
+
+    public GetBookDto getBook() {
+        return book;
+    }
+
+    public void setBook(GetBookDto book) {
+        this.book = book;
     }
 }

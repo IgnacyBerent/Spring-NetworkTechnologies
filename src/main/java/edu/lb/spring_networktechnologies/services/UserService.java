@@ -25,9 +25,10 @@ public class UserService {
     public List<GetUserDto> getAll() {
         var users = userRepository.findAll();
 
-        return StreamSupport.stream(users.spliterator(), false).map(user -> new GetUserDto(
-                user.getId(),
-                user.getFirstName()
+        return StreamSupport.stream(users.spliterator(), false).map(userEntity -> new GetUserDto(
+                userEntity.getId(),
+                userEntity.getFirstName(),
+                userEntity.getLastName()
         )).toList();
     }
 
@@ -36,7 +37,8 @@ public class UserService {
 
         return new GetUserDto(
             userEntity.getId(),
-            userEntity.getFirstName()
+            userEntity.getFirstName(),
+            userEntity.getLastName()
         );
     }
 

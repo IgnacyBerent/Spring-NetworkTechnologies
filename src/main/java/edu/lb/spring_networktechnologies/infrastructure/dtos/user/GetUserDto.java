@@ -2,11 +2,13 @@ package edu.lb.spring_networktechnologies.infrastructure.dtos.user;
 
 public class GetUserDto {
     private Long id;
-    private String username;
+    private String firstName;
+    private String lastName;
 
-    public GetUserDto(Long id, String username) {
+    public GetUserDto(Long id, String firstName, String lastName) {
         this.id = id;
-        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public GetUserDto() {
@@ -20,12 +22,20 @@ public class GetUserDto {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }
 
