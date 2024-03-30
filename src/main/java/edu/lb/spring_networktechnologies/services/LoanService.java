@@ -5,6 +5,7 @@ import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoanDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoansPageDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.user.GetUserDto;
 import edu.lb.spring_networktechnologies.infrastructure.entities.BookEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.LoanEntity;
@@ -15,13 +16,15 @@ import edu.lb.spring_networktechnologies.infrastructure.repositores.LoanReposito
 import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -40,22 +43,31 @@ public class LoanService extends OwnershipService {
     }
 
     @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #userId)")
-    public List<GetLoanDto> getAll(Long userId) {
-        List<LoanEntity> loans;
+    public GetLoansPageDto getAll(Long userId, int page, int size) {
+        Page<LoanEntity> loansPage;
+        Pageable pageable = PageRequest.of(page, size);
+
         if (userId != null) {
-            loans = loanRepository.findByUserId(userId);
+            loansPage = loanRepository.findByUserId(userId, pageable);
         } else {
-            loans = (List<LoanEntity>) loanRepository.findAll();
+            loansPage = loanRepository.findAll(pageable);
         }
 
-        return loans.stream()
+        List<GetLoanDto> loansDto = loansPage.getContent().stream()
                 .map(loanEntity -> new GetLoanDto(
                         loanEntity.getId(),
                         loanEntity.getLoanDate(),
                         loanEntity.getDueDate(),
                         mapUser(loanEntity.getUser()),
                         mapBook(loanEntity.getBook())
-                )).collect(Collectors.toList());
+                )).toList();
+
+        return new GetLoansPageDto(
+                loansDto,
+                loansPage.getNumber(),
+                loansPage.getTotalPages(),
+                loansPage.getTotalElements(),
+                loansPage.hasNext());
     }
 
     @PostAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, returnObject.user.id)")

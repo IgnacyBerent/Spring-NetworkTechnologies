@@ -4,6 +4,7 @@ import edu.lb.spring_networktechnologies.exceptions.CheckBindingExceptions;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoanDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoansPageDto;
 import edu.lb.spring_networktechnologies.services.LoanService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,8 @@ public class LoanController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<GetLoanDto>> getAll(@RequestParam(required = false) Long userId) {
-        List<GetLoanDto> loans = loanService.getAll(userId);
+    public ResponseEntity<GetLoansPageDto> getAll(@RequestParam(required = false) Long userId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        GetLoansPageDto loans = loanService.getAll(userId, page, size);
         return new ResponseEntity<>(loans, HttpStatus.OK);
     }
 
