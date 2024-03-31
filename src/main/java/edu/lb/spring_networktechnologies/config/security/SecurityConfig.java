@@ -1,4 +1,4 @@
-package edu.lb.spring_networktechnologies.security;
+package edu.lb.spring_networktechnologies.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

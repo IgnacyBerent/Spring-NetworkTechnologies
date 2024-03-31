@@ -1,4 +1,4 @@
-package edu.lb.spring_networktechnologies.security;
+package edu.lb.spring_networktechnologies.config.security;
 
 import edu.lb.spring_networktechnologies.services.JwtService;
 import jakarta.servlet.FilterChain;
