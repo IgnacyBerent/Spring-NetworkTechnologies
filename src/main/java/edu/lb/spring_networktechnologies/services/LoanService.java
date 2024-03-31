@@ -83,7 +83,7 @@ public class LoanService extends OwnershipService {
         );
     }
 
-    @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #userId)")
+    @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #loan.userId)")
     public CreateLoanResponseDto create(CreateLoanDto loan) {
         UserEntity user = userRepository.findById(loan.getUserId()).orElseThrow(NotFoundException::user);
         BookEntity book = bookRepository.findById(loan.getBookId()).orElseThrow(NotFoundException::book);

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OwnershipService {
-    private final AuthRepository authRepository;
+    protected final AuthRepository authRepository;
 
     @Autowired
     public OwnershipService(AuthRepository authRepository) {
