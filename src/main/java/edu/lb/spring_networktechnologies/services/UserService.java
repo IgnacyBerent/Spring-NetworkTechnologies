@@ -7,6 +7,7 @@ import edu.lb.spring_networktechnologies.infrastructure.dtos.user.UpdateUserDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.user.UpdateUserResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.entities.AuthEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
+import edu.lb.spring_networktechnologies.infrastructure.mappings.MapUser;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.AuthRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -33,31 +34,19 @@ public class UserService extends OwnershipService {
         AuthEntity authEntity = authRepository.findByUsername(username).orElseThrow(NotFoundException::user);
         UserEntity userEntity = authEntity.getUser();
 
-        return new GetUserDto(
-                userEntity.getId(),
-                userEntity.getFirstName(),
-                userEntity.getLastName()
-        );
+        return MapUser.toGetUserDto(userEntity);
     }
 
     public List<GetUserDto> getAll() {
         var users = userRepository.findAll();
 
-        return users.stream().map(userEntity -> new GetUserDto(
-                userEntity.getId(),
-                userEntity.getFirstName(),
-                userEntity.getLastName()
-        )).toList();
+        return users.stream().map(MapUser::toGetUserDto).toList();
     }
 
     public GetUserDto getOne(Long id) {
         var userEntity = userRepository.findById(id).orElseThrow(NotFoundException::user);
 
-        return new GetUserDto(
-                userEntity.getId(),
-                userEntity.getFirstName(),
-                userEntity.getLastName()
-        );
+        return MapUser.toGetUserDto(userEntity);
     }
 
     @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #id)")

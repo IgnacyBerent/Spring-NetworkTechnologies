@@ -7,6 +7,7 @@ import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDto;
 import edu.lb.spring_networktechnologies.infrastructure.entities.BookEntity;
+import edu.lb.spring_networktechnologies.infrastructure.mappings.MapBook;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.BookRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @Slf4j
@@ -30,30 +30,14 @@ public class BookService {
     public List<GetBookDto> getAll() {
         var books = bookRepository.findAll();
 
-        return StreamSupport.stream(books.spliterator(), false)
-                .map(book -> new GetBookDto(
-                        book.getId(),
-                        book.getIsbn(),
-                        book.getTitle(),
-                        book.getAuthor(),
-                        book.getPublisher(),
-                        book.getPublicationYear(),
-                        book.getAvailableCopies() > 0
-                )).collect(Collectors.toList());
+        return books.stream()
+                .map(MapBook::toGetBookDto).collect(Collectors.toList());
     }
 
     public GetBookDto getOne(Long id) {
         var bookEntity = bookRepository.findById(id).orElseThrow(NotFoundException::book);
 
-        return new GetBookDto(
-                bookEntity.getId(),
-                bookEntity.getIsbn(),
-                bookEntity.getTitle(),
-                bookEntity.getAuthor(),
-                bookEntity.getPublisher(),
-                bookEntity.getPublicationYear(),
-                bookEntity.getAvailableCopies() > 0
-        );
+        return MapBook.toGetBookDto(bookEntity);
     }
 
     public CreateBookResponseDto create(CreateBookDto book) {
@@ -93,7 +77,7 @@ public class BookService {
     }
 
     public void delete(Long id) {
-        if(!bookRepository.existsById(id)) {
+        if (!bookRepository.existsById(id)) {
             log.info("Book with given id not found");
             throw NotFoundException.book();
         }
