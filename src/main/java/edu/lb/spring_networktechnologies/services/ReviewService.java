@@ -7,39 +7,45 @@ import edu.lb.spring_networktechnologies.infrastructure.dtos.review.GetReviewDto
 import edu.lb.spring_networktechnologies.infrastructure.entities.BookEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.ReviewEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
+import edu.lb.spring_networktechnologies.infrastructure.repositores.AuthRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.BookRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.ReviewRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
 import edu.lb.spring_networktechnologies.mappings.MapReview;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 @Service
 @Slf4j
-public class ReviewService {
+public class ReviewService extends OwnershipService {
 
     private final ReviewRepository reviewRepository;
 
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     @Autowired
-    public ReviewService(ReviewRepository reviewRepository, BookRepository bookRepository, UserRepository userRepository) {
+    public ReviewService(ReviewRepository reviewRepository, BookRepository bookRepository, UserRepository userRepository, AuthRepository authRepository) {
+        super(authRepository);
         this.reviewRepository = reviewRepository;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
     }
 
-    public List<GetReviewDto> getAll() {
-        var reviews = reviewRepository.findAll();
+    public List<GetReviewDto> getAllBookReviews(Long bookId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ReviewEntity> reviews = reviewRepository.findByBookId(bookId, pageable);
 
-        return reviews.stream()
-                .map(MapReview::toGetReviewDto).collect(Collectors.toList());
+        return reviews
+                .stream()
+                .map(MapReview::toGetReviewDto)
+                .collect(Collectors.toList());
     }
 
     public GetReviewDto getOne(Long id) {

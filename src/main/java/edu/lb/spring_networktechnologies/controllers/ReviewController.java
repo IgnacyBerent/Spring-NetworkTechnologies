@@ -26,9 +26,9 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @GetMapping("/getAll")
-    public @ResponseBody List<GetReviewDto> getAllBooks() {
-        return reviewService.getAll();
+    @GetMapping("/book/{bookId}")
+    public ResponseEntity<List<GetReviewDto>> getAllBooks(@PathVariable Long bookId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return new ResponseEntity<>(reviewService.getAllBookReviews(bookId, page, size), HttpStatus.OK);
     }
 
     @PostMapping("/add")
@@ -40,8 +40,8 @@ public class ReviewController {
     }
 
     @GetMapping("/get/{id}")
-    public GetReviewDto getLoan(@PathVariable Long id) {
-        return reviewService.getOne(id);
+    public ResponseEntity<GetReviewDto> getLoan(@PathVariable Long id) {
+        return new ResponseEntity<>(reviewService.getOne(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
