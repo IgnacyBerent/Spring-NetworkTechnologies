@@ -14,6 +14,7 @@ import edu.lb.spring_networktechnologies.infrastructure.repositores.AuthReposito
 import edu.lb.spring_networktechnologies.infrastructure.repositores.BookRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.LoanRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
+import edu.lb.spring_networktechnologies.mappings.MapLoan;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,13 +55,7 @@ public class LoanService extends OwnershipService {
         }
 
         List<GetLoanDto> loansDto = loansPage.getContent().stream()
-                .map(loanEntity -> new GetLoanDto(
-                        loanEntity.getId(),
-                        loanEntity.getLoanDate(),
-                        loanEntity.getDueDate(),
-                        mapUser(loanEntity.getUser()),
-                        mapBook(loanEntity.getBook())
-                )).toList();
+                .map(MapLoan::toGetLoanDto).toList();
 
         return new GetLoansPageDto(
                 loansDto,
@@ -74,13 +69,7 @@ public class LoanService extends OwnershipService {
     public GetLoanDto getOne(Long id) {
         var loanEntity = loanRepository.findById(id).orElseThrow(NotFoundException::loan);
 
-        return new GetLoanDto(
-                loanEntity.getId(),
-                loanEntity.getLoanDate(),
-                loanEntity.getDueDate(),
-                mapUser(loanEntity.getUser()),
-                mapBook(loanEntity.getBook())
-        );
+        return MapLoan.toGetLoanDto(loanEntity);
     }
 
     @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #loan.userId)")
@@ -110,26 +99,6 @@ public class LoanService extends OwnershipService {
             throw NotFoundException.loan();
         }
         loanRepository.deleteById(id);
-    }
-
-    private GetUserDto mapUser(UserEntity user) {
-        return new GetUserDto(
-                user.getId(),
-                user.getFirstName(),
-                user.getLastName()
-        );
-    }
-
-    private GetBookDto mapBook(BookEntity book) {
-        return new GetBookDto(
-                book.getId(),
-                book.getIsbn(),
-                book.getTitle(),
-                book.getAuthor(),
-                book.getPublisher(),
-                book.getPublicationYear(),
-                book.getAvailableCopies() > 0
-        );
     }
 
 }

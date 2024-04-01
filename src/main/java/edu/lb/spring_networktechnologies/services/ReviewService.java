@@ -10,6 +10,7 @@ import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.BookRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.ReviewRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
+import edu.lb.spring_networktechnologies.mappings.MapReview;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,28 +38,14 @@ public class ReviewService {
     public List<GetReviewDto> getAll() {
         var reviews = reviewRepository.findAll();
 
-        return StreamSupport.stream(reviews.spliterator(), false)
-                .map(review -> new GetReviewDto(
-                        review.getId(),
-                        review.getBook().getTitle(),
-                        review.getUser().getFirstName(),
-                        review.getRating(),
-                        review.getComment(),
-                        review.getReviewDate()
-                )).collect(Collectors.toList());
+        return reviews.stream()
+                .map(MapReview::toGetReviewDto).collect(Collectors.toList());
     }
 
     public GetReviewDto getOne(Long id) {
         var reviewEntity = reviewRepository.findById(id).orElseThrow(NotFoundException::review);
 
-        return new GetReviewDto(
-                reviewEntity.getId(),
-                reviewEntity.getBook().getTitle(),
-                reviewEntity.getUser().getFirstName(),
-                reviewEntity.getRating(),
-                reviewEntity.getComment(),
-                reviewEntity.getReviewDate()
-        );
+        return MapReview.toGetReviewDto(reviewEntity);
     }
 
     public CreateReviewResponseDto create(CreateReviewDto review) {
