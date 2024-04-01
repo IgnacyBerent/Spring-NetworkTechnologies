@@ -12,6 +12,7 @@ import edu.lb.spring_networktechnologies.infrastructure.repositores.UserReposito
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,8 +60,7 @@ public class UserService extends OwnershipService {
         );
     }
 
-    @PostAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #id)")
-
+    @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #id)")
     public DeleteUserDto delete(Long id) {
         if (!userRepository.existsById(id)) {
             log.info("User with given id not found");

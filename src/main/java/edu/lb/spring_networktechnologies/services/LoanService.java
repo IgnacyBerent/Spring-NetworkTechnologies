@@ -1,12 +1,10 @@
 package edu.lb.spring_networktechnologies.services;
 
 import edu.lb.spring_networktechnologies.exceptions.NotFoundException;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoanDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoansPageDto;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.user.GetUserDto;
 import edu.lb.spring_networktechnologies.infrastructure.entities.BookEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.LoanEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
