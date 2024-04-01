@@ -39,6 +39,10 @@ public class BookEntity {
     @Column(name = "reviews")
     private List<ReviewEntity> reviews;
 
+    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL)
+    @Column(name = "details")
+    private BookDetailsEntity details;
+
     public Long getId() {
         return id;
     }
@@ -109,5 +113,13 @@ public class BookEntity {
 
     public void setReviews(List<ReviewEntity> reviews) {
         this.reviews = reviews;
+    }
+
+    public BookDetailsEntity getDetails() {
+        return details;
+    }
+
+    public void setDetails(BookDetailsEntity details) {
+        this.details = details;
     }
 }
