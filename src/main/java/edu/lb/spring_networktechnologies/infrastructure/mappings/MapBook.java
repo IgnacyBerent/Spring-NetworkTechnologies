@@ -1,4 +1,4 @@
-package edu.lb.spring_networktechnologies.mappings;
+package edu.lb.spring_networktechnologies.infrastructure.mappings;
 
 import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDto;
 import edu.lb.spring_networktechnologies.infrastructure.entities.BookEntity;

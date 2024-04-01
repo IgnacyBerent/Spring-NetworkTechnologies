@@ -12,7 +12,7 @@ import edu.lb.spring_networktechnologies.infrastructure.repositores.AuthReposito
 import edu.lb.spring_networktechnologies.infrastructure.repositores.BookRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.LoanRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
-import edu.lb.spring_networktechnologies.mappings.MapLoan;
+import edu.lb.spring_networktechnologies.infrastructure.mappings.MapLoan;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
