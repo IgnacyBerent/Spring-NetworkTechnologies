@@ -4,6 +4,7 @@ import edu.lb.spring_networktechnologies.exceptions.CheckBindingExceptions;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBooksPageDto;
 import edu.lb.spring_networktechnologies.services.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/book")
@@ -28,8 +27,8 @@ public class BookController {
     }
 
     @GetMapping("/getAll")
-    public @ResponseBody List<GetBookDto> getAllBooks() {
-        return bookService.getAll();
+    public ResponseEntity<GetBooksPageDto> getAllBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return new ResponseEntity<>(bookService.getAll(page, size), HttpStatus.OK);
     }
 
     @PostMapping("/add")

@@ -2,20 +2,19 @@ package edu.lb.spring_networktechnologies.services;
 
 import edu.lb.spring_networktechnologies.exceptions.AlreadyExistsException;
 import edu.lb.spring_networktechnologies.exceptions.NotFoundException;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.AddBookResponseDto;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookDto;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookResponseDto;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.*;
 import edu.lb.spring_networktechnologies.infrastructure.entities.BookEntity;
 import edu.lb.spring_networktechnologies.infrastructure.mappings.MapBook;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.BookRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -27,11 +26,19 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public List<GetBookDto> getAll() {
-        var books = bookRepository.findAll();
+    public GetBooksPageDto getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<BookEntity> booksPage = bookRepository.findAll(pageable);
+        List<GetBookDto> booksDto = booksPage.getContent().stream()
+                .map(MapBook::toGetBookDto)
+                .toList();
 
-        return books.stream()
-                .map(MapBook::toGetBookDto).collect(Collectors.toList());
+        return new GetBooksPageDto(
+                booksDto,
+                booksPage.getNumber(),
+                booksPage.getTotalPages(),
+                booksPage.getTotalElements(),
+                booksPage.hasNext());
     }
 
     public GetBookDto getOne(Long id) {
