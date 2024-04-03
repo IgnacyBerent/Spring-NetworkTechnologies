@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -28,7 +29,13 @@ public class AuthController {
         this.authService = authService;
     }
 
-
+    /**
+     * Register a new user
+     * @param requestBody - RegisterDto object containing information about the user
+     * @param bindingResult - BindingResult object containing information about the validation
+     * @return RegisterResponseDto object containing information about the user
+     * @throws ResponseStatusException - if there are any validation errors
+     */
     @PostMapping("/register")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RegisterResponseDto> register(@Valid @RequestBody RegisterDto requestBody, BindingResult bindingResult) {
@@ -37,6 +44,14 @@ public class AuthController {
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
+    /**
+     * Login a user
+     * @param dto - LoginDto object containing information about the user
+     * @param bindingResult - BindingResult object containing information about the validation
+     * @return LoginResponseDto object containing information about the user
+     * @throws ResponseStatusException - if there are any validation errors
+     * @throws InvalidCredentialsException - if the credentials are invalid
+     */
     @PostMapping("/login")
     @PreAuthorize("permitAll")
     public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginDto dto, BindingResult bindingResult) {

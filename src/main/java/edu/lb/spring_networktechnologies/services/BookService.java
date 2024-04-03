@@ -26,6 +26,12 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
+    /**
+     * Method for getting all books from the database using pagination
+     * @param page - page number
+     * @param size - number of books per page
+     * @return GetBooksPageDto object containing list of GetBookDto objects and pagination information
+     */
     public GetBooksPageDto getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<BookEntity> booksPage = bookRepository.findAll(pageable);
@@ -41,12 +47,24 @@ public class BookService {
                 booksPage.hasNext());
     }
 
+    /**
+     * Method for getting a single book by its id
+     * @param id - id of the book
+     * @return GetBookDto object containing information about the book
+     * @throws NotFoundException - if book with given id does not exist
+     */
     public GetBookDto getOne(Long id) {
         var bookEntity = bookRepository.findById(id).orElseThrow(NotFoundException::book);
 
         return MapBook.toGetBookDto(bookEntity);
     }
 
+    /**
+     * Method for creating a new book
+     * @param book - CreateBookDto object containing information about the book
+     * @return CreateBookResponseDto object containing information about the created book
+     * @throws AlreadyExistsException - if book with given ISBN already exists
+     */
     public CreateBookResponseDto create(CreateBookDto book) {
 
         if (bookRepository.existsByIsbn(book.getIsbn())) {
@@ -76,6 +94,13 @@ public class BookService {
         );
     }
 
+    /**
+     * Method for updating a book
+     * @param id - id of the book
+     * @param copies - number of copies to add
+     * @return AddBookResponseDto object containing information about the updated book
+     * @throws NotFoundException - if book with given id does not exist
+     */
     public AddBookResponseDto add(Long id, Integer copies) {
         var bookEntity = bookRepository.findById(id).orElseThrow(NotFoundException::book);
         bookEntity.setAvailableCopies(bookEntity.getAvailableCopies() + copies);
@@ -83,6 +108,11 @@ public class BookService {
         return new AddBookResponseDto(bookEntity.getId(), bookEntity.getAvailableCopies());
     }
 
+    /**
+     * Method for deleting a book
+     * @param id - id of the book
+     * @throws NotFoundException - if book with given id does not exist
+     */
     public void delete(Long id) {
         if (!bookRepository.existsById(id)) {
             log.info("Book with given id not found");

@@ -15,6 +15,13 @@ public class OwnershipService {
         this.authRepository = authRepository;
     }
 
+    /**
+     * Method for checking if the user is the owner of the entity
+     * @param username - username of the user
+     * @param userId - id of the user
+     * @return true if the user is the owner of the entity, false otherwise
+     * @throws NotFoundException - if user with given username does not exist
+     */
     public boolean isOwner(String username, Long userId) {
         if (userId == null || username == null) {
             return false;

@@ -26,11 +26,24 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
+    /**
+     * Get all reviews from the database using pagination
+     * @param page - page number
+     * @param size - number of reviews per page
+     * @return List of GetReviewDto objects containing information about the reviews
+     */
     @GetMapping("/book/{bookId}")
     public ResponseEntity<List<GetReviewDto>> getAllBooks(@PathVariable Long bookId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return new ResponseEntity<>(reviewService.getAllBookReviews(bookId, page, size), HttpStatus.OK);
     }
 
+    /**
+     * Create a new review
+     * @param review - CreateReviewDto object containing information about the review
+     * @param bindingResult - BindingResult object containing information about the validation
+     * @return CreateReviewResponseDto object containing information about the review
+     * @throws ResponseStatusException - if there are any validation errors
+     */
     @PostMapping("/add")
     @ResponseStatus(code = HttpStatus.CREATED) //code 201
     public ResponseEntity<CreateReviewResponseDto> create(@Valid @RequestBody CreateReviewDto review, BindingResult bindingResult) {
@@ -39,11 +52,21 @@ public class ReviewController {
         return new ResponseEntity<>(newReview, HttpStatus.CREATED);
     }
 
+    /**
+     * Get a single review by its id
+     * @param id - id of the review
+     * @return GetReviewDto object containing information about the review
+     */
     @GetMapping("/get/{id}")
     public ResponseEntity<GetReviewDto> getLoan(@PathVariable Long id) {
         return new ResponseEntity<>(reviewService.getOne(id), HttpStatus.OK);
     }
 
+    /**
+     * Delete a review by its id
+     * @param id - id of the review
+     * @return ResponseEntity object with no content
+     */
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         reviewService.delete(id);

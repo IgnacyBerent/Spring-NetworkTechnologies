@@ -37,6 +37,12 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
+    /**
+     * This method is used to register a new user by admin
+     * @param registerDto - DTO object containing user data
+     * @return RegisterResponseDto - DTO object containing non-sensitive user data
+     * @throws AlreadyExistsException - if user with given username or email already exists
+     */
     @Transactional
     public RegisterResponseDto register(RegisterDto registerDto){
         if (authRepository.existsByUsername(registerDto.getUsername())) {
@@ -64,6 +70,14 @@ public class AuthService {
         return new RegisterResponseDto(userEntity.getId(), authEntity.getUsername(), authEntity.getRole());
     }
 
+    /**
+     * This method is used to login a user
+     * It checks if user with given username exists and if password is correct
+     * If everything is correct, it generates JWT token
+     * @param loginDto - DTO object containing user credentials
+     * @return LoginResponseDto - DTO object containing JWT token
+     * @throws NotFoundException - if user with given username not found
+     */
     public LoginResponseDto login(LoginDto loginDto){
         Optional<AuthEntity> authEntity = authRepository
                 .findByUsername(loginDto.getUsername());

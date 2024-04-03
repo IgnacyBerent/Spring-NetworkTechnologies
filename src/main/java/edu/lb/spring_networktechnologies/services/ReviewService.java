@@ -38,6 +38,13 @@ public class ReviewService extends OwnershipService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Method for getting all reviews of a book from the database using pagination
+     * @param bookId - id of the book whose reviews are to be fetched
+     * @param page - page number
+     * @param size - number of reviews per page
+     * @return List of GetReviewDto objects containing information about the reviews
+     */
     public List<GetReviewDto> getAllBookReviews(Long bookId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ReviewEntity> reviews = reviewRepository.findByBookId(bookId, pageable);
@@ -48,12 +55,23 @@ public class ReviewService extends OwnershipService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method for getting a single review by its id
+     * @param id - id of the review
+     * @return GetReviewDto object containing information about the review
+     * @throws NotFoundException - if review with given id does not exist
+     */
     public GetReviewDto getOne(Long id) {
         var reviewEntity = reviewRepository.findById(id).orElseThrow(NotFoundException::review);
 
         return MapReview.toGetReviewDto(reviewEntity);
     }
 
+    /**
+     * Method for creating a new review
+     * @param review - CreateReviewDto object containing information about the review
+     * @return CreateReviewResponseDto object containing information about the created review
+     */
     public CreateReviewResponseDto create(CreateReviewDto review) {
         var reviewEntity = new ReviewEntity();
         BookEntity book = bookRepository.findById(review.getBookId()).orElseThrow(() -> new RuntimeException("Book not found"));
@@ -79,6 +97,11 @@ public class ReviewService extends OwnershipService {
         );
     }
 
+    /**
+     * Method for deleting a review by its id
+     * @param id - id of the review
+     * @throws NotFoundException - if review with given id does not exist
+     */
     public void delete(Long id) {
         if(!reviewRepository.existsById(id)) {
             log.info("Review with id: {} not found", id);

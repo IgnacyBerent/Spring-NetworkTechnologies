@@ -30,6 +30,13 @@ public class UserService extends OwnershipService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Method for getting a single user by its username
+     * @param username - username of the user
+     * @return GetUserDto object containing information about the user
+     * @throws NotFoundException - if user with given username does not exist
+     */
+    @PostAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #returnObject.id)")
     public GetUserDto getUserByUsername(String username) {
         AuthEntity authEntity = authRepository.findByUsername(username).orElseThrow(NotFoundException::user);
         UserEntity userEntity = authEntity.getUser();
@@ -37,18 +44,34 @@ public class UserService extends OwnershipService {
         return MapUser.toGetUserDto(userEntity);
     }
 
+    /**
+     * Method for getting all users from the database
+     * @return List of GetUserDto objects containing information about the users
+     */
     public List<GetUserDto> getAll() {
         var users = userRepository.findAll();
 
         return users.stream().map(MapUser::toGetUserDto).toList();
     }
 
+    /**
+     * Method for getting a single user by its id
+     * @param id - id of the user
+     * @return GetUserDto object containing information about the user
+     * @throws NotFoundException - if user with given id does not exist
+     */
     public GetUserDto getOne(Long id) {
         var userEntity = userRepository.findById(id).orElseThrow(NotFoundException::user);
 
         return MapUser.toGetUserDto(userEntity);
     }
 
+    /**
+     * Method for deleting a single user by its id
+     * @param id - id of the user
+     * @return DeleteUserDto object containing id of the deleted user
+     * @throws NotFoundException - if user with given id does not exist
+     */
     @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #id)")
     public DeleteUserDto delete(Long id) {
         if (!userRepository.existsById(id)) {
@@ -59,6 +82,13 @@ public class UserService extends OwnershipService {
         return new DeleteUserDto(id);
     }
 
+    /**
+     * Method for updating a single user by its id
+     * @param id - id of the user
+     * @param dto - UpdateUserDto object containing information about the user
+     * @return UpdateUserResponseDto object containing information about the updated user
+     * @throws NotFoundException - if user with given id does not exist
+     */
     @PostAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #id)")
     public UpdateUserResponseDto update(Long id, UpdateUserDto dto) {
         UserEntity userEntity = userRepository.findById(id).orElseThrow(NotFoundException::user);

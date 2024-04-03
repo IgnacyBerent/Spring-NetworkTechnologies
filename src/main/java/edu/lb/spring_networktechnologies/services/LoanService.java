@@ -41,6 +41,14 @@ public class LoanService extends OwnershipService {
         this.bookRepository = bookRepository;
     }
 
+    /**
+     * Method for getting all loans from the database using pagination
+     * it returns all loans in database if admin or only the loans of the user
+     * @param userId - id of the user whose loans are to be fetched
+     * @param page - page number
+     * @param size - number of loans per page
+     * @return GetLoansPageDto object containing list of GetLoanDto objects and pagination information
+     */
     @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #userId)")
     public GetLoansPageDto getAll(Long userId, int page, int size) {
         Page<LoanEntity> loansPage;
@@ -63,6 +71,12 @@ public class LoanService extends OwnershipService {
                 loansPage.hasNext());
     }
 
+    /**
+     * Method for getting a loan information by its id if is admin or the user is the owner of the loan
+     * @param id - id of the loan
+     * @return GetLoanDto object containing information about the loan
+     * @throws NotFoundException - if loan with given id does not exist
+     */
     @PostAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, returnObject.user.id)")
     public GetLoanDto getOne(Long id) {
         var loanEntity = loanRepository.findById(id).orElseThrow(NotFoundException::loan);
@@ -70,6 +84,12 @@ public class LoanService extends OwnershipService {
         return MapLoan.toGetLoanDto(loanEntity);
     }
 
+    /**
+     * Method for creating a new loan by the admin or the user who is creating the loan
+     * @param loan - CreateLoanDto object containing information about the loan
+     * @return CreateLoanResponseDto object containing information about the created loan
+     * @throws NotFoundException - if user or book with given id does not exist
+     */
     @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #loan.userId)")
     public CreateLoanResponseDto create(CreateLoanDto loan) {
         UserEntity user = userRepository.findById(loan.getUserId()).orElseThrow(NotFoundException::user);
@@ -91,6 +111,11 @@ public class LoanService extends OwnershipService {
         );
     }
 
+    /**
+     * Method for deleting a loan
+     * @param id - id of the loan
+     * @throws NotFoundException - if loan with given id does not exist
+     */
     public void delete(Long id) {
         if(!loanRepository.existsById(id)) {
             log.info("Loan with id: {} not found", id);
