@@ -1,7 +1,6 @@
 package edu.lb.spring_networktechnologies.services;
 
 import edu.lb.spring_networktechnologies.exceptions.NotFoundException;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.user.DeleteUserDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.user.GetUserDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.user.UpdateUserDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.user.UpdateUserResponseDto;
@@ -69,17 +68,15 @@ public class UserService extends OwnershipService {
     /**
      * Method for deleting a single user by its id
      * @param id - id of the user
-     * @return DeleteUserDto object containing id of the deleted user
      * @throws NotFoundException - if user with given id does not exist
      */
     @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #id)")
-    public DeleteUserDto delete(Long id) {
+    public void delete(Long id) {
         if (!userRepository.existsById(id)) {
             log.info("User with given id not found");
             throw NotFoundException.user();
         }
         userRepository.deleteById(id);
-        return new DeleteUserDto(id);
     }
 
     /**

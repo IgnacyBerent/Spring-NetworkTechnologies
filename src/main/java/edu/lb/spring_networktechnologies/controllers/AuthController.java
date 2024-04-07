@@ -6,6 +6,11 @@ import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginResponseD
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.RegisterDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.RegisterResponseDto;
 import edu.lb.spring_networktechnologies.services.AuthService;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Auth", description = "Endpoints for authentication")
 public class AuthController {
 
     private final AuthService authService;
@@ -38,6 +44,12 @@ public class AuthController {
      */
     @PostMapping("/register")
     @PreAuthorize("hasRole('ADMIN')")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "400", description = "Validation error"),
+                    @ApiResponse(responseCode = "201", description = "User registered", content = @Content),
+            }
+    )
     public ResponseEntity<RegisterResponseDto> register(@Valid @RequestBody RegisterDto requestBody, BindingResult bindingResult) {
         CheckBindingExceptions.check(bindingResult);
         RegisterResponseDto dto = authService.register(requestBody);
@@ -54,6 +66,13 @@ public class AuthController {
      */
     @PostMapping("/login")
     @PreAuthorize("permitAll")
+    @SecurityRequirements
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "400", description = "Login failed", content = @Content),
+                    @ApiResponse(responseCode = "201", description = "Login success"),
+            }
+    )
     public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginDto dto, BindingResult bindingResult) {
         CheckBindingExceptions.check(bindingResult);
         LoginResponseDto responseDto = authService.login(dto);

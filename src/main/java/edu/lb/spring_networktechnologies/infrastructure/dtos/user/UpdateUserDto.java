@@ -1,10 +1,14 @@
 package edu.lb.spring_networktechnologies.infrastructure.dtos.user;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.openapitools.jackson.nullable.JsonNullable;
 
 public class UpdateUserDto {
+    @Schema(description = "First name of the user", example = "John", nullable = true)
     private JsonNullable<String> fName;
+    @Schema(description = "Last name of the user", example = "Doe", nullable = true)
     private JsonNullable<String> lName;
+    @Schema(description = "Email of the user", example = "example@ex.com", nullable = true)
     private JsonNullable<String> email;
 
 

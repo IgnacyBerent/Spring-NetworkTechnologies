@@ -6,6 +6,10 @@ import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanResp
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoanDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoansPageDto;
 import edu.lb.spring_networktechnologies.services.LoanService;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/loan")
 @PostAuthorize("isAuthenticated()")
+@Tag(name = "Loans", description = "Endpoints for loans")
 public class LoanController {
 
     private final LoanService loanService;
@@ -36,6 +41,7 @@ public class LoanController {
      * @return GetLoansPageDto object containing list of GetLoanDto objects and pagination information
      */
     @GetMapping("/getAll")
+    @ApiResponse(responseCode = "200", description = "Loans found")
     public ResponseEntity<GetLoansPageDto> getAll(@RequestParam(required = false) Long userId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         GetLoansPageDto loans = loanService.getAll(userId, page, size);
         return new ResponseEntity<>(loans, HttpStatus.OK);
@@ -48,6 +54,12 @@ public class LoanController {
      * @return CreateLoanResponseDto object containing information about the loan
      */
     @PostMapping("/add")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "400", description = "Validation error", content = @Content),
+                    @ApiResponse(responseCode = "201", description = "Loan created"),
+            }
+    )
     @ResponseStatus(code = HttpStatus.CREATED) //code 201
     public ResponseEntity<CreateLoanResponseDto> create(@Valid @RequestBody CreateLoanDto loan, BindingResult bindingResult) {
         CheckBindingExceptions.check(bindingResult);
@@ -61,6 +73,7 @@ public class LoanController {
      * @return GetLoanDto object containing information about the loan
      */
     @GetMapping("/get/{id}")
+    @ApiResponse(responseCode = "200", description = "Loan found")
     public GetLoanDto getLoan(@PathVariable Long id) {
         return loanService.getOne(id);
     }
@@ -69,6 +82,12 @@ public class LoanController {
      * Delete a loan by its id
      * @param id - id of the loan
      */
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "204", description = "Loan deleted", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Loan not found", content = @Content),
+            }
+    )
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         loanService.delete(id);
