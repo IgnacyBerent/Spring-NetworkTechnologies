@@ -1,6 +1,7 @@
 package edu.lb.spring_networktechnologies.controllers;
 
 import edu.lb.spring_networktechnologies.exceptions.CheckBindingExceptions;
+import edu.lb.spring_networktechnologies.exceptions.UserAlreadyExistsException;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.RegisterDto;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,16 +39,19 @@ public class AuthController {
 
     /**
      * Register a new user
-     * @param requestBody - RegisterDto object containing information about the user
+     *
+     * @param requestBody   - RegisterDto object containing information about the user
      * @param bindingResult - BindingResult object containing information about the validation
      * @return RegisterResponseDto object containing information about the user
-     * @throws ResponseStatusException - if there are any validation errors
+     * @throws ResponseStatusException    - if there are any validation errors
+     * @throws UserAlreadyExistsException - if the user already exists
      */
     @PostMapping("/register")
     @PreAuthorize("hasRole('ADMIN')")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "400", description = "Validation error"),
+                    @ApiResponse(responseCode = "409", description = "User already exists"),
                     @ApiResponse(responseCode = "201", description = "User registered", content = @Content),
             }
     )
@@ -58,11 +63,12 @@ public class AuthController {
 
     /**
      * Login a user
-     * @param dto - LoginDto object containing information about the user
+     *
+     * @param dto           - LoginDto object containing information about the user
      * @param bindingResult - BindingResult object containing information about the validation
      * @return LoginResponseDto object containing information about the user
      * @throws ResponseStatusException - if there are any validation errors
-     * @throws InvalidCredentialsException - if the credentials are invalid
+     * @throws BadCredentialsException - if the credentials are invalid
      */
     @PostMapping("/login")
     @PreAuthorize("permitAll")

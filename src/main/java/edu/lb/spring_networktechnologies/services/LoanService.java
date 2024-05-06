@@ -1,6 +1,5 @@
 package edu.lb.spring_networktechnologies.services;
 
-import edu.lb.spring_networktechnologies.exceptions.NotFoundException;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoanDto;
@@ -10,6 +9,7 @@ import edu.lb.spring_networktechnologies.infrastructure.entities.LoanEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
 import edu.lb.spring_networktechnologies.infrastructure.mappings.MapLoan;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -80,11 +80,11 @@ public class LoanService extends OwnershipService {
      *
      * @param id - id of the loan
      * @return GetLoanDto object containing information about the loan
-     * @throws NotFoundException - if loan with given id does not exist
+     * @throws EntityNotFoundException - if loan with given id does not exist
      */
     @PostAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, returnObject.user.id)")
     public GetLoanDto getOne(Long id) {
-        var loanEntity = loanRepository.findById(id).orElseThrow(NotFoundException::loan);
+        var loanEntity = loanRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Loan with id: " + id + " not found"));
 
         Double averageRating = reviewRepository.calculateAverageRating(loanEntity.getBook().getId());
         float avgRating = (averageRating != null) ? averageRating.floatValue() : 0.0f;
@@ -96,12 +96,12 @@ public class LoanService extends OwnershipService {
      *
      * @param loan - CreateLoanDto object containing information about the loan
      * @return CreateLoanResponseDto object containing information about the created loan
-     * @throws NotFoundException - if user or book with given id does not exist
+     * @throws EntityNotFoundException - if user or book with given id does not exist
      */
     @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #loan.userId)")
     public CreateLoanResponseDto create(CreateLoanDto loan) {
-        UserEntity user = userRepository.findById(loan.getUserId()).orElseThrow(NotFoundException::user);
-        BookEntity book = bookRepository.findById(loan.getBookId()).orElseThrow(NotFoundException::book);
+        UserEntity user = userRepository.findById(loan.getUserId()).orElseThrow(() -> new EntityNotFoundException("User with id: " + loan.getUserId() + " not found"));
+        BookEntity book = bookRepository.findById(loan.getBookId()).orElseThrow(() -> new EntityNotFoundException("Book with id: " + loan.getBookId() + " not found"));
         LocalDate currentDate = LocalDate.now();
         LoanEntity loanEntity = new LoanEntity();
         loanEntity.setUser(user);
@@ -123,12 +123,12 @@ public class LoanService extends OwnershipService {
      * Method for deleting a loan
      *
      * @param id - id of the loan
-     * @throws NotFoundException - if loan with given id does not exist
+     * @throws EntityNotFoundException - if loan with given id does not exist
      */
     public void delete(Long id) {
         if (!loanRepository.existsById(id)) {
             log.info("Loan with id: {} not found", id);
-            throw NotFoundException.loan();
+            throw new EntityNotFoundException("Loan with id: " + id + " not found");
         }
         loanRepository.deleteById(id);
     }

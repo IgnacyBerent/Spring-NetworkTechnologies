@@ -1,8 +1,6 @@
 package edu.lb.spring_networktechnologies.services;
 
-import edu.lb.spring_networktechnologies.exceptions.InvalidCredentialsException;
-import edu.lb.spring_networktechnologies.exceptions.AlreadyExistsException;
-import edu.lb.spring_networktechnologies.exceptions.NotFoundException;
+import edu.lb.spring_networktechnologies.exceptions.UserAlreadyExistsException;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.LoginResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.auth.RegisterDto;
@@ -11,13 +9,13 @@ import edu.lb.spring_networktechnologies.infrastructure.entities.AuthEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.AuthRepository;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 
 @Service
@@ -39,19 +37,18 @@ public class AuthService {
 
     /**
      * This method is used to register a new user by admin
+     *
      * @param registerDto - DTO object containing user data
      * @return RegisterResponseDto - DTO object containing non-sensitive user data
-     * @throws AlreadyExistsException - if user with given username or email already exists
+     * @throws UserAlreadyExistsException - if user with given username or email already exists
      */
     @Transactional
-    public RegisterResponseDto register(RegisterDto registerDto){
+    public RegisterResponseDto register(RegisterDto registerDto) {
         if (authRepository.existsByUsername(registerDto.getUsername())) {
-            log.info("User with given username already exists");
-            throw AlreadyExistsException.userByUsername(registerDto.getUsername());
+            throw new UserAlreadyExistsException("User with username " + registerDto.getUsername() + " already exists");
         }
         if (userRepository.existsByEmail(registerDto.getEmail())) {
-            log.info("User with given email already exists");
-            throw AlreadyExistsException.userByEmail(registerDto.getEmail());
+            throw new UserAlreadyExistsException("User with email " + registerDto.getEmail() + " already exists");
         }
 
         UserEntity userEntity = new UserEntity();
@@ -71,28 +68,27 @@ public class AuthService {
     }
 
     /**
-     * This method is used to login a user
+     * This method is used to log in a user
      * It checks if user with given username exists and if password is correct
      * If everything is correct, it generates JWT token
+     *
      * @param loginDto - DTO object containing user credentials
      * @return LoginResponseDto - DTO object containing JWT token
-     * @throws NotFoundException - if user with given username not found
+     * @throws EntityNotFoundException - if user with given username not found
+     * @throws BadCredentialsException - if password is incorrect
      */
-    public LoginResponseDto login(LoginDto loginDto){
-        Optional<AuthEntity> authEntity = authRepository
-                .findByUsername(loginDto.getUsername());
+    public LoginResponseDto login(LoginDto loginDto) {
+        var authEntity = authRepository
+                .findByUsername(loginDto.getUsername()).orElseThrow(
+                        () -> new EntityNotFoundException("User not found")
+                );
 
-        if (authEntity.isEmpty()) {
-            log.info("User with given username not found");
-            throw NotFoundException.user();
+
+        if (!passwordEncoder.matches(loginDto.getPassword(), authEntity.getPassword())) {
+            throw new BadCredentialsException("Incorrect password");
         }
 
-        if (!passwordEncoder.matches(loginDto.getPassword(), authEntity.get().getPassword())) {
-            log.info("Invalid credentials");
-            throw InvalidCredentialsException.create();
-        }
-
-        String token = jwtService.generateToken(authEntity.get());
+        String token = jwtService.generateToken(authEntity);
         return new LoginResponseDto(token);
     }
 }

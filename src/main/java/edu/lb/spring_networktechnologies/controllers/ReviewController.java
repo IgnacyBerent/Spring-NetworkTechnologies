@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -34,6 +36,7 @@ public class ReviewController {
 
     /**
      * Get all reviews from the database using pagination
+     *
      * @param page - page number
      * @param size - number of reviews per page
      * @return List of GetReviewDto objects containing information about the reviews
@@ -48,16 +51,19 @@ public class ReviewController {
 
     /**
      * Create a new review
-     * @param review - CreateReviewDto object containing information about the review
+     *
+     * @param review        - CreateReviewDto object containing information about the review
      * @param bindingResult - BindingResult object containing information about the validation
      * @return CreateReviewResponseDto object containing information about the review
      * @throws ResponseStatusException - if there are any validation errors
+     * @throws EntityNotFoundException - if the user or book does not exist
      */
     @PostMapping("/add")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "400", description = "Validation error", content = @Content),
-                    @ApiResponse(responseCode = "201", description = "Review created"),
+                    @ApiResponse(responseCode = "400", description = "Validation error"),
+                    @ApiResponse(responseCode = "404", description = "User or book not found"),
+                    @ApiResponse(responseCode = "201", description = "Review created", content = @Content),
             }
     )
     public ResponseEntity<CreateReviewResponseDto> create(@Valid @RequestBody CreateReviewDto review, BindingResult bindingResult) {
@@ -68,21 +74,30 @@ public class ReviewController {
 
     /**
      * Get a single review by its id
+     *
      * @param id - id of the review
      * @return GetReviewDto object containing information about the review
+     * @throws EntityNotFoundException - if review with given id does not exist
      */
     @GetMapping("/get/{id}")
     @PreAuthorize("permitAll")
     @SecurityRequirements
-    @ApiResponse(responseCode = "200", description = "Review found")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Review found", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Review not found", content = @Content),
+            }
+    )
     public ResponseEntity<GetReviewDto> getLoan(@PathVariable Long id) {
         return new ResponseEntity<>(reviewService.getOne(id), HttpStatus.OK);
     }
 
     /**
      * Delete a review by its id
+     *
      * @param id - id of the review
      * @return ResponseEntity object with no content
+     * @throws EntityNotFoundException - if review with given id does not exist
      */
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("isAuthenticated()")

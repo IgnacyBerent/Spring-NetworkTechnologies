@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +32,10 @@ public class UserController {
 
     /**
      * Get the currently logged-in user
-     * @param principal - Principal object containing information about the currently logged in user
+     *
+     * @param principal - Principal object containing information about the currently logged-in user
      * @return GetUserDto object containing information about the user
+     * @throws EntityNotFoundException - if the user is not found
      */
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
@@ -50,6 +53,7 @@ public class UserController {
 
     /**
      * Get all users from the database
+     *
      * @return List of GetUserDto objects containing information about the users
      */
     @GetMapping("/getAll")
@@ -61,8 +65,10 @@ public class UserController {
 
     /**
      * Get a single user by its id
+     *
      * @param id - id of the user
      * @return GetUserDto object containing information about the user
+     * @throws EntityNotFoundException - if the user is not found
      */
     @GetMapping("/get/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -78,8 +84,10 @@ public class UserController {
 
     /**
      * Delete a user by its id
+     *
      * @param id - id of the user
      * @return DeleteUserDto object containing information about the deleted user
+     * @throws EntityNotFoundException - if the user is not found
      */
     @ApiResponses(
             value = {
@@ -95,9 +103,11 @@ public class UserController {
 
     /**
      * Update a user by its id
-     * @param id - id of the user
+     *
+     * @param id  - id of the user
      * @param dto - UpdateUserDto object containing information about the user
      * @return UpdateUserResponseDto object containing information about the updated user
+     * @throws EntityNotFoundException - if the user is not found
      */
     @PatchMapping("/update/{id}")
     @ApiResponses(

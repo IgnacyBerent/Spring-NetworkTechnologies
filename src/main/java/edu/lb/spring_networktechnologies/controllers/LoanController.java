@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,8 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/loan")
@@ -35,9 +35,10 @@ public class LoanController {
 
     /**
      * Get all loans from the database using pagination
+     *
      * @param userId - id of the user whose loans are to be fetched
-     * @param page - page number
-     * @param size - number of loans per page
+     * @param page   - page number
+     * @param size   - number of loans per page
      * @return GetLoansPageDto object containing list of GetLoanDto objects and pagination information
      */
     @GetMapping("/getAll")
@@ -49,18 +50,22 @@ public class LoanController {
 
     /**
      * Create a new loan
-     * @param loan - CreateLoanDto object containing information about the loan
+     *
+     * @param loan          - CreateLoanDto object containing information about the loan
      * @param bindingResult - BindingResult object containing information about the validation
      * @return CreateLoanResponseDto object containing information about the loan
+     * @throws ResponseStatusException - if there are any validation errors
+     * @throws EntityNotFoundException - if the user or book does not exist
      */
     @PostMapping("/add")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "400", description = "Validation error", content = @Content),
-                    @ApiResponse(responseCode = "201", description = "Loan created"),
+                    @ApiResponse(responseCode = "400", description = "Validation error"),
+                    @ApiResponse(responseCode = "404", description = "User or book not found"),
+                    @ApiResponse(responseCode = "201", description = "Loan created", content = @Content),
             }
     )
-    @ResponseStatus(code = HttpStatus.CREATED) //code 201
+    @ResponseStatus(code = HttpStatus.CREATED)
     public ResponseEntity<CreateLoanResponseDto> create(@Valid @RequestBody CreateLoanDto loan, BindingResult bindingResult) {
         CheckBindingExceptions.check(bindingResult);
         var newLoan = loanService.create(loan);
@@ -69,18 +74,27 @@ public class LoanController {
 
     /**
      * Get a single loan by its id
+     *
      * @param id - id of the loan
      * @return GetLoanDto object containing information about the loan
+     * @throws EntityNotFoundException - if the loan does not exist
      */
     @GetMapping("/get/{id}")
-    @ApiResponse(responseCode = "200", description = "Loan found")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Loan found", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Loan not found", content = @Content),
+            }
+    )
     public GetLoanDto getLoan(@PathVariable Long id) {
         return loanService.getOne(id);
     }
 
     /**
      * Delete a loan by its id
+     *
      * @param id - id of the loan
+     * @throws EntityNotFoundException - if the loan does not exist
      */
     @ApiResponses(
             value = {

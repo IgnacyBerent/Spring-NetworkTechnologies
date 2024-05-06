@@ -1,12 +1,17 @@
 package edu.lb.spring_networktechnologies.controllers;
 
+import edu.lb.spring_networktechnologies.exceptions.BookAlreadyExistsException;
 import edu.lb.spring_networktechnologies.exceptions.CheckBindingExceptions;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.*;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookResponseDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDetailsDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBooksPageDto;
 import edu.lb.spring_networktechnologies.services.BookService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/book")
@@ -30,6 +36,7 @@ public class BookController {
 
     /**
      * Get all books from the database using pagination
+     *
      * @param page - page number
      * @param size - number of books per page
      * @return GetBooksPageDto object containing list of GetBookDto objects and pagination information
@@ -42,10 +49,12 @@ public class BookController {
 
     /**
      * Create a new book
-     * @param book - CreateBookDto object containing information about the book
+     *
+     * @param book          - CreateBookDto object containing information about the book
      * @param bindingResult - BindingResult object containing information about the validation
      * @return CreateBookResponseDto object containing information about the book
-     * @throws ResponseStatusException - if there are any validation errors
+     * @throws ResponseStatusException    - if there are any validation errors
+     * @throws BookAlreadyExistsException - if the book already exists
      */
     @PostMapping("/add")
     @ResponseStatus(code = HttpStatus.CREATED) //code 201
@@ -53,6 +62,7 @@ public class BookController {
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "400", description = "Validation error", content = @Content),
+                    @ApiResponse(responseCode = "409", description = "Book already exists"),
                     @ApiResponse(responseCode = "201", description = "Book created"),
             }
     )
@@ -64,19 +74,28 @@ public class BookController {
 
     /**
      * Get a book details by book id
+     *
      * @param id - id of the book
      * @return GetBookDetailsDto object containing details about the book
+     * @throws EntityNotFoundException - if the book does not exist
      */
     @GetMapping("/details/{id}")
-    @ApiResponse(responseCode = "200", description = "Book found")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Book details found", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Book not found", content = @Content),
+            }
+    )
     public ResponseEntity<GetBookDetailsDto> getBookDetails(@PathVariable Long id) {
         return new ResponseEntity<>(bookService.getDetails(id), HttpStatus.OK);
     }
 
     /**
      * Delete a book by its id
+     *
      * @param id - id of the book
      * @return ResponseEntity with no content
+     * @throws EntityNotFoundException - if the book does not exist
      */
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
