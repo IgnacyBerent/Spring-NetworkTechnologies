@@ -19,6 +19,7 @@ public class CreateReviewDto {
     @Schema(description = "Rating of the book", example = "4.5")
     private Float rating;
     @NotEmpty(message = "Comment is required")
+    @Size(max = 3000, message = "Comment must be less than 3000 characters")
     @Schema(description = "Comment of the user", example = "Great book!")
     private String comment;
 

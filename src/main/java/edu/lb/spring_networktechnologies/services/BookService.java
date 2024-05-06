@@ -6,6 +6,7 @@ import edu.lb.spring_networktechnologies.infrastructure.dtos.book.*;
 import edu.lb.spring_networktechnologies.infrastructure.entities.BookEntity;
 import edu.lb.spring_networktechnologies.infrastructure.mappings.MapBook;
 import edu.lb.spring_networktechnologies.infrastructure.repositores.BookRepository;
+import edu.lb.spring_networktechnologies.infrastructure.repositores.ReviewRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,12 @@ import java.util.List;
 @Slf4j
 public class BookService {
     private final BookRepository bookRepository;
+    private final ReviewRepository reviewRepository;
 
     @Autowired
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, ReviewRepository reviewRepository) {
         this.bookRepository = bookRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     /**
@@ -36,7 +39,11 @@ public class BookService {
         Pageable pageable = PageRequest.of(page, size);
         Page<BookEntity> booksPage = bookRepository.findAll(pageable);
         List<GetBookDto> booksDto = booksPage.getContent().stream()
-                .map(MapBook::toGetBookDto)
+                .map(bookEntity -> {
+                    Double averageRating = reviewRepository.calculateAverageRating(bookEntity.getId());
+                    float avgRating = (averageRating != null) ? averageRating.floatValue() : 0.0f;
+                    return MapBook.toGetBookDto(bookEntity, avgRating);
+                })
                 .toList();
 
         return new GetBooksPageDto(
@@ -55,8 +62,9 @@ public class BookService {
      */
     public GetBookDto getOne(Long id) {
         var bookEntity = bookRepository.findById(id).orElseThrow(NotFoundException::book);
+        float rating = reviewRepository.calculateAverageRating(bookEntity.getId()).floatValue();
 
-        return MapBook.toGetBookDto(bookEntity);
+        return MapBook.toGetBookDto(bookEntity, rating);
     }
 
     /**
@@ -73,12 +81,15 @@ public class BookService {
         }
 
         var bookEntity = new BookEntity();
+        bookEntity.setImg(book.getImg());
         bookEntity.setIsbn(book.getIsbn());
         bookEntity.setTitle(book.getTitle());
         bookEntity.setAuthor(book.getAuthor());
         bookEntity.setPublisher(book.getPublisher());
         bookEntity.setPublicationYear(book.getPublicationYear());
         bookEntity.setAvailableCopies(book.getAvailableCopies());
+        bookEntity.setGenre(book.getGenre());
+        bookEntity.setSummary(book.getSummary());
         bookEntity.setReviews(new ArrayList<>());
         bookEntity.setLoaned(new ArrayList<>());
 
@@ -119,6 +130,20 @@ public class BookService {
             throw NotFoundException.book();
         }
         bookRepository.deleteById(id);
+    }
+
+    /**
+     * Method for getting details of a single book by its id
+     * @param id - id of the book
+     * @return GetBookDetailsDto object containing detailed information about the book
+     * @throws NotFoundException - if book with given id does not exist
+     */
+    public GetBookDetailsDto getDetails(Long id) {
+        var bookEntity = bookRepository.findById(id).orElseThrow(NotFoundException::book);
+        Double averageRating = reviewRepository.calculateAverageRating(bookEntity.getId());
+        float avgRating = (averageRating != null) ? averageRating.floatValue() : 0.0f;
+        int ratings = reviewRepository.countRatings(bookEntity.getId());
+        return MapBook.toGetBookDetails(bookEntity, avgRating, ratings);
     }
 
 }

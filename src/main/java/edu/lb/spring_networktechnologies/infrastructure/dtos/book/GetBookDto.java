@@ -2,24 +2,22 @@ package edu.lb.spring_networktechnologies.infrastructure.dtos.book;
 
 public class GetBookDto {
     private Long id;
-    private String isbn;
+    private String img;
     private String title;
     private String author;
-    private String publisher;
-    private int publicationYear;
+    private float rating;
     private boolean isAvailable;
 
-    public GetBookDto(Long id, String isbn, String title, String author, String publisher, int publicationYear, boolean isAvailable) {
-        this.id = id;
-        this.isbn = isbn;
-        this.title = title;
-        this.author = author;
-        this.publisher = publisher;
-        this.publicationYear = publicationYear;
-        this.isAvailable = isAvailable;
+    public GetBookDto() {
     }
 
-    public GetBookDto() {
+    public GetBookDto(Long id, String img, String title, String author, float rating, boolean isAvailable) {
+        this.id = id;
+        this.img = img;
+        this.title = title;
+        this.author = author;
+        this.rating = rating;
+        this.isAvailable = isAvailable;
     }
 
     public Long getId() {
@@ -30,12 +28,12 @@ public class GetBookDto {
         this.id = id;
     }
 
-    public String getIsbn() {
-        return isbn;
+    public String getImg() {
+        return img;
     }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
+    public void setImg(String img) {
+        this.img = img;
     }
 
     public String getTitle() {
@@ -54,20 +52,12 @@ public class GetBookDto {
         this.author = author;
     }
 
-    public String getPublisher() {
-        return publisher;
+    public float getRating() {
+        return rating;
     }
 
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
-
-    public int getPublicationYear() {
-        return publicationYear;
-    }
-
-    public void setPublicationYear(int publicationYear) {
-        this.publicationYear = publicationYear;
+    public void setRating(float rating) {
+        this.rating = rating;
     }
 
     public boolean isAvailable() {

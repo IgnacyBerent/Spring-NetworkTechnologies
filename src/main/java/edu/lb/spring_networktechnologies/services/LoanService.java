@@ -8,11 +8,8 @@ import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoansPageDt
 import edu.lb.spring_networktechnologies.infrastructure.entities.BookEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.LoanEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
-import edu.lb.spring_networktechnologies.infrastructure.repositores.AuthRepository;
-import edu.lb.spring_networktechnologies.infrastructure.repositores.BookRepository;
-import edu.lb.spring_networktechnologies.infrastructure.repositores.LoanRepository;
-import edu.lb.spring_networktechnologies.infrastructure.repositores.UserRepository;
 import edu.lb.spring_networktechnologies.infrastructure.mappings.MapLoan;
+import edu.lb.spring_networktechnologies.infrastructure.repositores.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,21 +29,24 @@ public class LoanService extends OwnershipService {
     private final LoanRepository loanRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
+    private final ReviewRepository reviewRepository;
 
     @Autowired
-    public LoanService(LoanRepository loanRepository, UserRepository userRepository, BookRepository bookRepository, AuthRepository authRepository) {
+    public LoanService(LoanRepository loanRepository, UserRepository userRepository, BookRepository bookRepository, AuthRepository authRepository, ReviewRepository reviewRepository) {
         super(authRepository);
         this.loanRepository = loanRepository;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     /**
      * Method for getting all loans from the database using pagination
      * it returns all loans in database if admin or only the loans of the user
+     *
      * @param userId - id of the user whose loans are to be fetched
-     * @param page - page number
-     * @param size - number of loans per page
+     * @param page   - page number
+     * @param size   - number of loans per page
      * @return GetLoansPageDto object containing list of GetLoanDto objects and pagination information
      */
     @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #userId)")
@@ -61,7 +61,11 @@ public class LoanService extends OwnershipService {
         }
 
         List<GetLoanDto> loansDto = loansPage.getContent().stream()
-                .map(MapLoan::toGetLoanDto).toList();
+                .map(loanEntity -> {
+                    Double averageRating = reviewRepository.calculateAverageRating(loanEntity.getBook().getId());
+                    float avgRating = (averageRating != null) ? averageRating.floatValue() : 0.0f;
+                    return MapLoan.toGetLoanDto(loanEntity, avgRating);
+                }).toList();
 
         return new GetLoansPageDto(
                 loansDto,
@@ -73,6 +77,7 @@ public class LoanService extends OwnershipService {
 
     /**
      * Method for getting a loan information by its id if is admin or the user is the owner of the loan
+     *
      * @param id - id of the loan
      * @return GetLoanDto object containing information about the loan
      * @throws NotFoundException - if loan with given id does not exist
@@ -81,11 +86,14 @@ public class LoanService extends OwnershipService {
     public GetLoanDto getOne(Long id) {
         var loanEntity = loanRepository.findById(id).orElseThrow(NotFoundException::loan);
 
-        return MapLoan.toGetLoanDto(loanEntity);
+        Double averageRating = reviewRepository.calculateAverageRating(loanEntity.getBook().getId());
+        float avgRating = (averageRating != null) ? averageRating.floatValue() : 0.0f;
+        return MapLoan.toGetLoanDto(loanEntity, avgRating);
     }
 
     /**
      * Method for creating a new loan by the admin or the user who is creating the loan
+     *
      * @param loan - CreateLoanDto object containing information about the loan
      * @return CreateLoanResponseDto object containing information about the created loan
      * @throws NotFoundException - if user or book with given id does not exist
@@ -113,11 +121,12 @@ public class LoanService extends OwnershipService {
 
     /**
      * Method for deleting a loan
+     *
      * @param id - id of the loan
      * @throws NotFoundException - if loan with given id does not exist
      */
     public void delete(Long id) {
-        if(!loanRepository.existsById(id)) {
+        if (!loanRepository.existsById(id)) {
             log.info("Loan with id: {} not found", id);
             throw NotFoundException.loan();
         }

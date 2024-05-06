@@ -1,10 +1,7 @@
 package edu.lb.spring_networktechnologies.controllers;
 
 import edu.lb.spring_networktechnologies.exceptions.CheckBindingExceptions;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookDto;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.CreateBookResponseDto;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBookDto;
-import edu.lb.spring_networktechnologies.infrastructure.dtos.book.GetBooksPageDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.book.*;
 import edu.lb.spring_networktechnologies.services.BookService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -66,14 +63,14 @@ public class BookController {
     }
 
     /**
-     * Get a single book by its id
+     * Get a book details by book id
      * @param id - id of the book
-     * @return GetBookDto object containing information about the book
+     * @return GetBookDetailsDto object containing details about the book
      */
-    @GetMapping("/get/{id}")
+    @GetMapping("/details/{id}")
     @ApiResponse(responseCode = "200", description = "Book found")
-    public ResponseEntity<GetBookDto> getBook(@PathVariable Long id) {
-        return new ResponseEntity<>(bookService.getOne(id), HttpStatus.OK);
+    public ResponseEntity<GetBookDetailsDto> getBookDetails(@PathVariable Long id) {
+        return new ResponseEntity<>(bookService.getDetails(id), HttpStatus.OK);
     }
 
     /**

@@ -24,7 +24,7 @@ public class ReviewEntity {
     @Basic
     private Float rating;
 
-    @Column(name = "comment")
+    @Column(name = "comment", columnDefinition = "VARCHAR(3000)")
     @Basic
     private String comment;
 

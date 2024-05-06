@@ -7,15 +7,13 @@ import java.time.LocalDate;
 
 public class GetReviewDto {
     private Long id;
-    private GetBookDto book;
     private GetUserDto user;
     private Float rating;
     private String comment;
     private LocalDate reviewDate;
 
-    public GetReviewDto(Long id, GetBookDto book, GetUserDto user, Float rating, String comment, LocalDate reviewDate) {
+    public GetReviewDto(Long id, GetUserDto user, Float rating, String comment, LocalDate reviewDate) {
         this.id = id;
-        this.book = book;
         this.user = user;
         this.rating = rating;
         this.comment = comment;
@@ -31,14 +29,6 @@ public class GetReviewDto {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public GetBookDto getBook() {
-        return book;
-    }
-
-    public void setBook(GetBookDto book) {
-        this.book = book;
     }
 
     public GetUserDto getUser() {

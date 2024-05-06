@@ -31,6 +31,15 @@ public class BookEntity {
     @Column(name = "available_copies")
     private int availableCopies;
 
+    @Column(name = "img")
+    private String img;
+
+    @Column(name = "genre")
+    private String genre;
+
+    @Column(name = "summary", columnDefinition = "VARCHAR(3000)")
+    private String summary;
+
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     @Column(name = "loaned")
     private List<LoanEntity> loaned;
@@ -93,6 +102,30 @@ public class BookEntity {
 
     public void setAvailableCopies(int availableCopies) {
         this.availableCopies = availableCopies;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     public List<LoanEntity> getLoaned() {
