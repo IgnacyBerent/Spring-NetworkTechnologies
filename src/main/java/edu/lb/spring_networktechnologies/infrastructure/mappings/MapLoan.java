@@ -9,6 +9,7 @@ public class MapLoan {
                 loanEntity.getId(),
                 loanEntity.getLoanDate(),
                 loanEntity.getDueDate(),
+                loanEntity.getReturnDate(),
                 MapUser.toGetUserDto(loanEntity.getUser()),
                 MapBook.toGetBookDto(loanEntity.getBook(), rating)
         );
