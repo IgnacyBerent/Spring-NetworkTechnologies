@@ -4,6 +4,7 @@ import edu.lb.spring_networktechnologies.exceptions.CheckBindingExceptions;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.review.CreateReviewDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.review.CreateReviewResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.review.GetReviewDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.review.GetReviewsPageDto;
 import edu.lb.spring_networktechnologies.services.ReviewService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,7 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/review")
+@RequestMapping("/api/reviews")
 @PreAuthorize("isAuthenticated()")
 @Tag(name = "Reviews", description = "Endpoints for reviews")
 public class ReviewController {
@@ -45,7 +46,7 @@ public class ReviewController {
     @PreAuthorize("permitAll")
     @SecurityRequirements
     @ApiResponse(responseCode = "200", description = "Reviews found")
-    public ResponseEntity<List<GetReviewDto>> getAllBooks(@PathVariable Long bookId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<GetReviewsPageDto> getAllBooks(@PathVariable Long bookId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return new ResponseEntity<>(reviewService.getAllBookReviews(bookId, page, size), HttpStatus.OK);
     }
 

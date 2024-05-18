@@ -3,6 +3,7 @@ package edu.lb.spring_networktechnologies.services;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.review.CreateReviewDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.review.CreateReviewResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.review.GetReviewDto;
+import edu.lb.spring_networktechnologies.infrastructure.dtos.review.GetReviewsPageDto;
 import edu.lb.spring_networktechnologies.infrastructure.entities.BookEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.ReviewEntity;
 import edu.lb.spring_networktechnologies.infrastructure.entities.UserEntity;
@@ -48,14 +49,20 @@ public class ReviewService extends OwnershipService {
      * @param size   - number of reviews per page
      * @return List of GetReviewDto objects containing information about the reviews
      */
-    public List<GetReviewDto> getAllBookReviews(Long bookId, int page, int size) {
+    public GetReviewsPageDto getAllBookReviews(Long bookId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<ReviewEntity> reviews = reviewRepository.findByBookId(bookId, pageable);
-
-        return reviews
-                .stream()
+        Page<ReviewEntity> reviewsPage = reviewRepository.findByBookId(bookId, pageable);
+        List<GetReviewDto> reviewsDto = reviewsPage.getContent().stream()
                 .map(MapReview::toGetReviewDto)
-                .collect(Collectors.toList());
+                .toList();
+
+        return new GetReviewsPageDto(
+                reviewsDto,
+                reviewsPage.getNumber(),
+                reviewsPage.getTotalPages(),
+                reviewsPage.getTotalElements(),
+                reviewsPage.hasNext()
+        );
     }
 
     /**
