@@ -12,12 +12,12 @@ public class GetBookDetailsDto {
     private int ratingCount;
     private String genre;
     private String summary;
-    private boolean isAvailable;
+    private int availableCopies;
 
     public GetBookDetailsDto() {
     }
 
-    public GetBookDetailsDto(Long id, String img, String title, String author, String isbn, int publicationYear, String publisher, float rating, int ratingCount, String genre, String summary, boolean isAvailable) {
+    public GetBookDetailsDto(Long id, String img, String title, String author, String isbn, int publicationYear, String publisher, float rating, int ratingCount, String genre, String summary, int availableCopies) {
         this.id = id;
         this.img = img;
         this.title = title;
@@ -29,7 +29,7 @@ public class GetBookDetailsDto {
         this.ratingCount = ratingCount;
         this.genre = genre;
         this.summary = summary;
-        this.isAvailable = isAvailable;
+        this.availableCopies = availableCopies;
     }
 
     public Long getId() {
@@ -120,11 +120,11 @@ public class GetBookDetailsDto {
         this.summary = summary;
     }
 
-    public boolean isAvailable() {
-        return isAvailable;
+    public int getAvailableCopies() {
+        return availableCopies;
     }
 
-    public void setAvailable(boolean available) {
-        isAvailable = available;
+    public void setAvailableCopies(int availableCopies) {
+        this.availableCopies = availableCopies;
     }
 }

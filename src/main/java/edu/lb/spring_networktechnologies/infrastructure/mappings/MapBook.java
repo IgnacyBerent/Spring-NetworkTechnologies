@@ -32,7 +32,7 @@ public class MapBook {
                 ratingCount,
                 bookEntity.getGenre(),
                 bookEntity.getSummary(),
-                bookEntity.getAvailableCopies() > 0
+                bookEntity.getAvailableCopies()
         );
     }
 
