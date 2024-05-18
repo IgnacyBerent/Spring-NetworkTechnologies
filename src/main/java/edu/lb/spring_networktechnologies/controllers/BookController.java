@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/api/book")
+@RequestMapping("/api/books")
 @PreAuthorize("isAuthenticated()")
 @Tag(name = "Books", description = "Endpoints for books")
 public class BookController {
