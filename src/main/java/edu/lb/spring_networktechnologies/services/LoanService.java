@@ -1,5 +1,6 @@
 package edu.lb.spring_networktechnologies.services;
 
+import edu.lb.spring_networktechnologies.exceptions.LoanAlreadyReturnedException;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoanDto;
@@ -15,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -41,7 +44,7 @@ public class LoanService extends OwnershipService {
     }
 
     /**
-     * Method for getting all loans from the database using pagination
+     * Method for getting all loans from the database using pagination in descending order by loan date.
      * it returns all loans in database if admin or only the loans of the user
      *
      * @param userId - id of the user whose loans are to be fetched
@@ -92,13 +95,15 @@ public class LoanService extends OwnershipService {
     }
 
     /**
-     * Method for creating a new loan by the admin or the user who is creating the loan
+     * Method for creating a new loan by the admin or the user who is creating the loan.
+     * Taking loan reduces the available copies of the book
      *
      * @param loan - CreateLoanDto object containing information about the loan
      * @return CreateLoanResponseDto object containing information about the created loan
      * @throws EntityNotFoundException - if user or book with given id does not exist
      */
     @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #loan.userId)")
+    @Transactional
     public CreateLoanResponseDto create(CreateLoanDto loan) {
         UserEntity user = userRepository.findById(loan.getUserId()).orElseThrow(() -> new EntityNotFoundException("User with id: " + loan.getUserId() + " not found"));
         BookEntity book = bookRepository.findById(loan.getBookId()).orElseThrow(() -> new EntityNotFoundException("Book with id: " + loan.getBookId() + " not found"));
@@ -110,6 +115,10 @@ public class LoanService extends OwnershipService {
         loanEntity.setDueDate(loan.getDueDate());
         var newLoan = loanRepository.save(loanEntity);
 
+        var bookEntity = bookRepository.findById(loan.getBookId()).orElseThrow(() -> new EntityNotFoundException("Book with id " + loan.getBookId() + " does not exist"));
+        bookEntity.setAvailableCopies(bookEntity.getAvailableCopies() - 1);
+        bookRepository.save(bookEntity);
+
         return new CreateLoanResponseDto(
                 newLoan.getId(),
                 newLoan.getUser().getId(),
@@ -117,6 +126,30 @@ public class LoanService extends OwnershipService {
                 newLoan.getLoanDate(),
                 newLoan.getDueDate()
         );
+    }
+
+    /**
+     * Method for returning the loan by the user who took the loan
+     *
+     * @param id - id of the loan
+     * @throws EntityNotFoundException - if loan with given id or borrowed book does not exist
+     */
+    @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #loan.userId)")
+    @Transactional
+    public void returnLoan(Long id) {
+        var loanEntity = loanRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Loan with id: " + id + " not found"));
+
+        if (loanEntity.getReturnDate() == null) {
+            loanEntity.setReturnDate(LocalDate.now());
+            loanRepository.save(loanEntity);
+        } else {
+            log.info("Loan with id: {} already returned", id);
+            throw new LoanAlreadyReturnedException("Loan with id: " + id + " is already returned");
+        }
+
+        var bookEntity = bookRepository.findById(loanEntity.getBook().getId()).orElseThrow(() -> new EntityNotFoundException("Book with id " + loanEntity.getBook().getId() + " does not exist"));
+        bookEntity.setAvailableCopies(bookEntity.getAvailableCopies() + 1);
+        bookRepository.save(bookEntity);
     }
 
     /**

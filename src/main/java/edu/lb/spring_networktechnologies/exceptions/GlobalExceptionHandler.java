@@ -58,6 +58,12 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(HttpStatusCode.valueOf(404), e.getMessage());
     }
 
+    @ExceptionHandler(LoanAlreadyReturnedException.class)
+    public ResponseEntity<ProblemDetail> handleLoanAlreadyExistsException(LoanAlreadyReturnedException e) {
+        log.error("Loan already returned", e);
+        return buildResponseEntity(HttpStatusCode.valueOf(409), e.getMessage());
+    }
+
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ProblemDetail> handleIllegalStateException(IllegalStateException e) {
         log.error("Illegal state", e);

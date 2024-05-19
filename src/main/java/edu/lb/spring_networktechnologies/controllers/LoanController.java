@@ -1,6 +1,7 @@
 package edu.lb.spring_networktechnologies.controllers;
 
 import edu.lb.spring_networktechnologies.exceptions.CheckBindingExceptions;
+import edu.lb.spring_networktechnologies.exceptions.LoanAlreadyReturnedException;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.CreateLoanResponseDto;
 import edu.lb.spring_networktechnologies.infrastructure.dtos.loan.GetLoanDto;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/api/loan")
+@RequestMapping("/api/loans")
 @PostAuthorize("isAuthenticated()")
 @Tag(name = "Loans", description = "Endpoints for loans")
 public class LoanController {
@@ -70,6 +71,26 @@ public class LoanController {
         CheckBindingExceptions.check(bindingResult);
         var newLoan = loanService.create(loan);
         return new ResponseEntity<>(newLoan, HttpStatus.CREATED);
+    }
+
+    /**
+     * Return a loan
+     *
+     * @param id - id of the loan
+     * @throws EntityNotFoundException - if the loan or borrowed does not exist
+     * @throws LoanAlreadyReturnedException - if the loan is already returned
+     */
+    @PutMapping("/return/{id}")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "204", description = "Loan returned", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Loan or Book not found", content = @Content),
+                    @ApiResponse(responseCode = "409", description = "Loan already returned", content = @Content),
+            }
+    )
+    public ResponseEntity<Void> returnLoan(@PathVariable Long id) {
+        loanService.returnLoan(id);
+        return ResponseEntity.noContent().build();
     }
 
     /**
