@@ -33,13 +33,21 @@ public class BookService {
     /**
      * Method for getting all books from the database using pagination
      *
-     * @param page - page number
-     * @param size - number of books per page
+     * @param page       - page number
+     * @param size       - number of books per page
+     * @param searchTerm - search term for filtering books by title
      * @return GetBooksPageDto object containing list of GetBookDto objects and pagination information
      */
-    public GetBooksPageDto getAll(int page, int size) {
+    public GetBooksPageDto getAll(int page, int size, String searchTerm) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<BookEntity> booksPage = bookRepository.findAll(pageable);
+        Page<BookEntity> booksPage;
+
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            booksPage = bookRepository.findAllByTitle(searchTerm, pageable);
+        } else {
+            booksPage = bookRepository.findAll(pageable);
+        }
+
         List<GetBookDto> booksDto = booksPage.getContent().stream()
                 .map(bookEntity -> {
                     Double averageRating = reviewRepository.calculateAverageRating(bookEntity.getId());

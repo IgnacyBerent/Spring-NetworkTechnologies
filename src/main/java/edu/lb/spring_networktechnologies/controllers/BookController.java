@@ -37,14 +37,15 @@ public class BookController {
     /**
      * Get all books from the database using pagination
      *
-     * @param page - page number
-     * @param size - number of books per page
+     * @param page       - page number
+     * @param size       - number of books per page
+     * @param searchTerm - search term for filtering books by title (optional)
      * @return GetBooksPageDto object containing list of GetBookDto objects and pagination information
      */
     @GetMapping("/getAll")
     @ApiResponse(responseCode = "200", description = "Books found")
-    public ResponseEntity<GetBooksPageDto> getAllBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        return new ResponseEntity<>(bookService.getAll(page, size), HttpStatus.OK);
+    public ResponseEntity<GetBooksPageDto> getAllBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String searchTerm) {
+        return new ResponseEntity<>(bookService.getAll(page, size, searchTerm), HttpStatus.OK);
     }
 
     /**
