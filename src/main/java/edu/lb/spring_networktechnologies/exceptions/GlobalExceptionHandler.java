@@ -70,6 +70,12 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(HttpStatusCode.valueOf(400), e.getMessage());
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ProblemDetail> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.error("Illegal argument", e);
+        return buildResponseEntity(HttpStatusCode.valueOf(400), e.getMessage());
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ProblemDetail> handleAccessDeniedException(AccessDeniedException e) {
         log.error("Access denied", e);

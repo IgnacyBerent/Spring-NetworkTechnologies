@@ -153,6 +153,28 @@ public class LoanService extends OwnershipService {
     }
 
     /**
+     * Extend the loan
+     *
+     * @param id - id of the loan
+     * @param days - number of days to extend the loan
+     * @throws EntityNotFoundException - if loan with given id does not exist
+     * @throws LoanAlreadyReturnedException - if the loan is already returned
+     */
+    @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #loan.userId)")
+    public void extendLoan(Long id, int days) {
+        var loanEntity = loanRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Loan with id: " + id + " not found"));
+
+        if (loanEntity.getReturnDate() != null) {
+            log.info("Loan with id: {} already returned", id);
+            throw new LoanAlreadyReturnedException("Loan with id: " + id + " is already returned");
+        }
+
+        final LocalDate newDueDate = loanEntity.getDueDate().plusDays(days);
+        loanEntity.setDueDate(newDueDate);
+        loanRepository.save(loanEntity);
+    }
+
+    /**
      * Method for deleting a loan
      *
      * @param id - id of the loan

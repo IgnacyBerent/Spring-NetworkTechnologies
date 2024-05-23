@@ -21,6 +21,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/api/loans")
 @PostAuthorize("isAuthenticated()")
@@ -77,7 +79,7 @@ public class LoanController {
      * Return a loan
      *
      * @param id - id of the loan
-     * @throws EntityNotFoundException - if the loan or borrowed does not exist
+     * @throws EntityNotFoundException      - if the loan or borrowed does not exist
      * @throws LoanAlreadyReturnedException - if the loan is already returned
      */
     @PutMapping("/return/{id}")
@@ -109,6 +111,27 @@ public class LoanController {
     )
     public GetLoanDto getLoan(@PathVariable Long id) {
         return loanService.getOne(id);
+    }
+
+    /**
+     * Extend the loan
+     *
+     * @param id - id of the loan
+     * @param days - number of days to extend the loan
+     * @throws EntityNotFoundException - if the loan does not exist
+     * @throws LoanAlreadyReturnedException - if the loan is already returned
+     */
+    @PutMapping("/extend/{id}")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "204", description = "Loan extended", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Loan not found", content = @Content),
+                    @ApiResponse(responseCode = "409", description = "Loan already returned", content = @Content),
+            }
+    )
+    public ResponseEntity<Void> extendLoan(@PathVariable Long id, @RequestParam int days) {
+        loanService.extendLoan(id, days);
+        return ResponseEntity.noContent().build();
     }
 
     /**
