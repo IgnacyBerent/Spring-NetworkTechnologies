@@ -16,12 +16,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/loans")
@@ -81,11 +80,13 @@ public class LoanController {
      * @param id - id of the loan
      * @throws EntityNotFoundException      - if the loan or borrowed does not exist
      * @throws LoanAlreadyReturnedException - if the loan is already returned
+     * @throws AccessDeniedException        - if the user is not the owner of the loan
      */
     @PutMapping("/return/{id}")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "204", description = "Loan returned", content = @Content),
+                    @ApiResponse(responseCode = "403", description = "Access denied", content = @Content),
                     @ApiResponse(responseCode = "404", description = "Loan or Book not found", content = @Content),
                     @ApiResponse(responseCode = "409", description = "Loan already returned", content = @Content),
             }
@@ -101,6 +102,7 @@ public class LoanController {
      * @param id - id of the loan
      * @return GetLoanDto object containing information about the loan
      * @throws EntityNotFoundException - if the loan does not exist
+     * @throws AccessDeniedException   - if the user is not the owner of the loan
      */
     @GetMapping("/get/{id}")
     @ApiResponses(
@@ -116,15 +118,17 @@ public class LoanController {
     /**
      * Extend the loan
      *
-     * @param id - id of the loan
+     * @param id   - id of the loan
      * @param days - number of days to extend the loan
-     * @throws EntityNotFoundException - if the loan does not exist
+     * @throws EntityNotFoundException      - if the loan does not exist
      * @throws LoanAlreadyReturnedException - if the loan is already returned
+     * @throws AccessDeniedException        - if the user is not the owner of the loan
      */
     @PutMapping("/extend/{id}")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "204", description = "Loan extended", content = @Content),
+                    @ApiResponse(responseCode = "403", description = "Access denied", content = @Content),
                     @ApiResponse(responseCode = "404", description = "Loan not found", content = @Content),
                     @ApiResponse(responseCode = "409", description = "Loan already returned", content = @Content),
             }

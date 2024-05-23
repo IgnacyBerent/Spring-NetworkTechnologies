@@ -16,9 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +53,7 @@ public class LoanService extends OwnershipService {
      * @param size   - number of loans per page
      * @return GetLoansPageDto object containing list of GetLoanDto objects and pagination information
      */
-    @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #userId)")
+    @PreAuthorize("hasRole('ADMIN') or this.isOwner(authentication.name, #userId)")
     public GetLoansPageDto getAll(Long userId, int page, int size) {
         Page<LoanEntity> loansPage;
         Pageable pageable = PageRequest.of(page, size);
@@ -85,7 +86,7 @@ public class LoanService extends OwnershipService {
      * @return GetLoanDto object containing information about the loan
      * @throws EntityNotFoundException - if loan with given id does not exist
      */
-    @PostAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, returnObject.user.id)")
+    @PostAuthorize("hasRole('ADMIN') or this.isOwner(authentication.name, returnObject.user.id)")
     public GetLoanDto getOne(Long id) {
         var loanEntity = loanRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Loan with id: " + id + " not found"));
 
@@ -102,7 +103,7 @@ public class LoanService extends OwnershipService {
      * @return CreateLoanResponseDto object containing information about the created loan
      * @throws EntityNotFoundException - if user or book with given id does not exist
      */
-    @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #loan.userId)")
+    @PreAuthorize("hasRole('ADMIN') or this.isOwner(authentication.name, #loan.userId)")
     @Transactional
     public CreateLoanResponseDto create(CreateLoanDto loan) {
         UserEntity user = userRepository.findById(loan.getUserId()).orElseThrow(() -> new EntityNotFoundException("User with id: " + loan.getUserId() + " not found"));
@@ -132,12 +133,18 @@ public class LoanService extends OwnershipService {
      * Method for returning the loan by the user who took the loan
      *
      * @param id - id of the loan
-     * @throws EntityNotFoundException - if loan with given id or borrowed book does not exist
+     * @throws EntityNotFoundException      - if loan with given id or borrowed book does not exist
+     * @throws LoanAlreadyReturnedException - if the loan is already returned
+     * @throws AccessDeniedException        - if the user is not the owner of the loan
      */
-    @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #loan.userId)")
     @Transactional
-    public void returnLoan(Long id) {
+    public GetLoanDto returnLoan(Long id) {
         var loanEntity = loanRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Loan with id: " + id + " not found"));
+
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!this.isOwner(currentUsername, loanEntity.getUser().getId())) {
+            throw new AccessDeniedException("User is not the owner of the loan");
+        }
 
         if (loanEntity.getReturnDate() == null) {
             loanEntity.setReturnDate(LocalDate.now());
@@ -150,19 +157,28 @@ public class LoanService extends OwnershipService {
         var bookEntity = bookRepository.findById(loanEntity.getBook().getId()).orElseThrow(() -> new EntityNotFoundException("Book with id " + loanEntity.getBook().getId() + " does not exist"));
         bookEntity.setAvailableCopies(bookEntity.getAvailableCopies() + 1);
         bookRepository.save(bookEntity);
+
+        Double averageRating = reviewRepository.calculateAverageRating(loanEntity.getBook().getId());
+        float avgRating = (averageRating != null) ? averageRating.floatValue() : 0.0f;
+        return MapLoan.toGetLoanDto(loanEntity, avgRating);
     }
 
     /**
      * Extend the loan
      *
-     * @param id - id of the loan
+     * @param id   - id of the loan
      * @param days - number of days to extend the loan
-     * @throws EntityNotFoundException - if loan with given id does not exist
+     * @throws EntityNotFoundException      - if loan with given id does not exist
      * @throws LoanAlreadyReturnedException - if the loan is already returned
+     * @throws AccessDeniedException        - if the user is not the owner of the loan
      */
-    @PreAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #loan.userId)")
-    public void extendLoan(Long id, int days) {
+    public GetLoanDto extendLoan(Long id, int days) {
         var loanEntity = loanRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Loan with id: " + id + " not found"));
+
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!this.isOwner(currentUsername, loanEntity.getUser().getId())) {
+            throw new AccessDeniedException("User is not the owner of the loan");
+        }
 
         if (loanEntity.getReturnDate() != null) {
             log.info("Loan with id: {} already returned", id);
@@ -172,6 +188,10 @@ public class LoanService extends OwnershipService {
         final LocalDate newDueDate = loanEntity.getDueDate().plusDays(days);
         loanEntity.setDueDate(newDueDate);
         loanRepository.save(loanEntity);
+
+        Double averageRating = reviewRepository.calculateAverageRating(loanEntity.getBook().getId());
+        float avgRating = (averageRating != null) ? averageRating.floatValue() : 0.0f;
+        return MapLoan.toGetLoanDto(loanEntity, avgRating);
     }
 
     /**

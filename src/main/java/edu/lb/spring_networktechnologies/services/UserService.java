@@ -36,7 +36,6 @@ public class UserService extends OwnershipService {
      * @return GetUserDto object containing information about the user
      * @throws EntityNotFoundException - if user with given username does not exist
      */
-    @PostAuthorize("hasRole('ADMIN') or isAuthenticated() and this.isOwner(authentication.name, #returnObject.id)")
     public GetUserDto getUserByUsername(String username) {
         AuthEntity authEntity = authRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User with username " + username + " does not exist"));
         UserEntity userEntity = authEntity.getUser();
