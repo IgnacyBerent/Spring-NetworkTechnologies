@@ -13,8 +13,8 @@ public class CreateReviewDto {
     @Schema(description = "ID of the user", example = "1")
     private Long userId;
     @NotNull(message = "Rating is required")
-    @Min(value = 1, message = "Rating must be between 1 and 5")
-    @Max(value = 5, message = "Rating must be between 1 and 5")
+    @Min(value = 0, message = "Rating must be between 0 and 5")
+    @Max(value = 5, message = "Rating must be between 0 and 5")
     @Digits(integer = 1, fraction = 1, message = "Rating must have one digit after the decimal point")
     @Schema(description = "Rating of the book", example = "4.5")
     private Float rating;
